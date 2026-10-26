@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 console.log('====================================================');
-console.log('   PORTFOLIO SERVICES UPGRADE — QUALITY AUDIT       ');
+console.log('   PORTFOLIO ALL 8 SERVICES — QUALITY AUDIT        ');
 console.log('====================================================\n');
 
 let failed = false;
@@ -21,9 +21,9 @@ function assert(condition, message) {
   }
 }
 
-// 1. Five Services Specification Check
-console.log('[AUDIT 1] Final Service Categories & Data Integrity');
-assert(services.length === 5, `Expected exactly 5 services, found ${services.length}`);
+// 1. All 8 Services Specification Check
+console.log('[AUDIT 1] Final Service Categories & Data Integrity (All 8 Services)');
+assert(services.length === 8, `Expected exactly 8 services, found ${services.length}`);
 
 const expectedServices = [
   {
@@ -48,8 +48,8 @@ const expectedServices = [
     num: '03',
     id: 'ecommerce',
     slug: '/services/ecommerce',
-    title: 'E-commerce Website Development',
-    heroHeadline: 'Take Your Business Online.',
+    title: 'E-commerce Development',
+    heroHeadline: 'Turn Your Products Into an Online Store.',
     heroCta: "LET'S BUILD YOUR ONLINE STORE",
     shortDesc: 'Online stores designed to showcase products, simplify shopping, and help businesses sell online.'
   },
@@ -64,12 +64,39 @@ const expectedServices = [
   },
   {
     num: '05',
-    id: 'custom-integrations',
-    slug: '/services/custom-integrations',
-    title: 'Custom Features & AI Integrations',
-    heroHeadline: 'Make Your Website Work Smarter.',
+    id: 'custom-web-apps',
+    slug: '/services/custom-web-apps',
+    title: 'Custom Web Applications',
+    heroHeadline: 'Software Built Around the Way Your Business Works.',
+    heroCta: "LET'S BUILD YOUR APPLICATION",
+    shortDesc: 'Software built around the way your business works, from internal portals to custom client workflows.'
+  },
+  {
+    num: '06',
+    id: 'ai-business-automation',
+    slug: '/services/ai-business-automation',
+    title: 'AI & Business Automation',
+    heroHeadline: 'Make Your Business Work Smarter.',
     heroCta: "LET'S AUTOMATE YOUR WORKFLOW",
-    shortDesc: 'Add useful website features, AI assistants, and business integrations that reduce manual work and improve customer interactions.'
+    shortDesc: 'Connect useful AI capabilities and business tools to reduce repetitive tasks, streamline enquiries, and support everyday workflows.'
+  },
+  {
+    num: '07',
+    id: 'seo-optimisation',
+    slug: '/services/seo-optimisation',
+    title: 'SEO & Website Optimisation',
+    heroHeadline: 'Build a Stronger Foundation for Search and Performance.',
+    heroCta: "LET'S OPTIMISE YOUR WEBSITE",
+    shortDesc: 'Improve the technical foundations of your website so search engines can understand its content and visitors can use it more effectively.'
+  },
+  {
+    num: '08',
+    id: 'website-maintenance',
+    slug: '/services/website-maintenance',
+    title: 'Website Maintenance & Support',
+    heroHeadline: 'Keep Your Website Working at Its Best.',
+    heroCta: "LET'S DISCUSS MAINTENANCE",
+    shortDesc: 'Keep your website maintained and up to date with practical technical support, fixes, and ongoing improvements based on your needs.'
   }
 ];
 
@@ -83,12 +110,12 @@ expectedServices.forEach((exp, idx) => {
   assert(actual.heroHeadline === exp.heroHeadline, `Service ${idx + 1} hero headline is "${actual.heroHeadline}"`);
   assert(actual.heroCta === exp.heroCta, `Service ${idx + 1} hero CTA is "${actual.heroCta}"`);
   assert(actual.capabilitiesAndDeliverables && actual.capabilitiesAndDeliverables.length >= 6, `Service ${idx + 1} deliverables count (${actual.capabilitiesAndDeliverables.length})`);
-  assert(actual.problemAndSuitability && actual.problemAndSuitability.length >= 3, `Service ${idx + 1} problem/suitability count (${actual.problemAndSuitability.length})`);
+  assert(actual.businessChallenge && actual.businessChallenge.length >= 3, `Service ${idx + 1} business challenge count (${actual.businessChallenge.length})`);
   assert(actual.metaTitle && actual.metaTitle.includes(actual.title), `Service ${idx + 1} meta title configured`);
   assert(actual.metaDescription && actual.metaDescription.length > 50, `Service ${idx + 1} meta description configured`);
 });
 
-// 2. Unwanted Category Labels & Agency sections check
+// 2. Disallowed Labels
 console.log('\n[AUDIT 2] Verification of Disallowed Labels & Elements');
 const disallowRegex = /CORPORATE & SME|ONLINE COMMERCE|SMARTER WORKFLOWS/i;
 services.forEach((s) => {
@@ -109,9 +136,12 @@ const serviceDetailCode = fs.readFileSync(path.join(__dirname, '../src/component
 assert(serviceDetailCode.includes('service.heroHeadline'), 'ServiceDetail renders heroHeadline');
 assert(serviceDetailCode.includes('service.heroCta'), 'ServiceDetail renders heroCta');
 assert(serviceDetailCode.includes('service.capabilitiesAndDeliverables'), 'ServiceDetail renders capabilities and deliverables');
-assert(serviceDetailCode.includes('service.problemAndSuitability'), 'ServiceDetail renders problems solved & suitability');
+assert(serviceDetailCode.includes('service.businessChallenge'), 'ServiceDetail renders business challenges');
+assert(serviceDetailCode.includes('service.ourApproach'), 'ServiceDetail renders our approach');
+assert(serviceDetailCode.includes('service.processStages'), 'ServiceDetail renders process stages');
 assert(serviceDetailCode.includes('service.closingHeadline'), 'ServiceDetail renders closing headline');
 assert(serviceDetailCode.includes('onStartProject'), 'ServiceDetail connects CTA to existing onStartProject');
+assert(serviceDetailCode.includes('onError'), 'ServiceDetail includes onError image fallback handler');
 
 const appCode = fs.readFileSync(path.join(__dirname, '../src/App.jsx'), 'utf-8');
 assert(appCode.includes('import ServiceDetail from \'./components/ServiceDetail\''), 'App.jsx imports ServiceDetail');
@@ -125,11 +155,23 @@ const servicesCompCode = fs.readFileSync(path.join(__dirname, '../src/components
 assert(servicesCompCode.includes('LEARN MORE'), 'Services.jsx renders LEARN MORE button/link');
 assert(servicesCompCode.includes('item.shortDescription'), 'Services.jsx displays concise short description');
 
+// 5. Project Images Verification
+console.log('\n[AUDIT 5] Project Images Verification on Disk');
+const allProjectsList = [featuredProject, ...demoProjects];
+allProjectsList.forEach((p) => {
+  const publicPath = path.join(__dirname, '../public', p.image);
+  assert(fs.existsSync(publicPath), `Project image exists for ${p.title}: ${p.image}`);
+  if (fs.existsSync(publicPath)) {
+    const stat = fs.statSync(publicPath);
+    assert(stat.size > 10000, `Image file has non-trivial size (${stat.size} bytes) for ${p.title}`);
+  }
+});
+
 console.log('\n====================================================');
 if (failed) {
   console.error('❌ SOME AUDIT CHECKS FAILED');
   process.exit(1);
 } else {
-  console.log('✓ ALL AUDIT CHECKS PASSED PERFECTLY!');
+  console.log('✓ ALL 8 SERVICES AUDIT CHECKS PASSED PERFECTLY!');
   console.log('====================================================');
 }

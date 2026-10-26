@@ -5,6 +5,7 @@ import PageHeader from './components/PageHeader';
 import Hero from './components/Hero';
 import Marquee from './components/Marquee';
 import Statement from './components/Statement';
+import TechStack from './components/TechStack';
 import Services from './components/Services';
 import ServiceDetail from './components/ServiceDetail';
 import ImpactComparison from './components/ImpactComparison';
@@ -35,6 +36,9 @@ function getInitialRoute() {
   if (path === '/work') return '/work';
   if (path === '/services') return '/services';
   if (path === '/contact') return '/contact';
+
+  // Support route alias /services/custom-integrations -> /services/ai-business-automation
+  if (path === '/services/custom-integrations') return '/services/ai-business-automation';
 
   const matchedService = services.find((s) => s.slug === path);
   if (matchedService) return matchedService.slug;
@@ -116,6 +120,7 @@ export default function App() {
   const navigateTo = (toRoute, targetHash = null) => {
     let route = toRoute.toLowerCase().replace(/\/$/, '') || '/';
     if (route === '/home') route = '/';
+    if (route === '/services/custom-integrations') route = '/services/ai-business-automation';
 
     setCurrentRoute(route);
 
@@ -171,7 +176,9 @@ export default function App() {
     navigateTo('/contact', '#contact');
   };
 
-  const activeService = services.find((s) => s.slug === currentRoute);
+  const activeService = services.find(
+    (s) => s.slug === currentRoute || (currentRoute === '/services/custom-integrations' && s.id === 'ai-business-automation')
+  );
 
   return (
     <div className="portfolio-app-root">
@@ -205,7 +212,10 @@ export default function App() {
             {/* Section 3: High-Contrast Ethos Statement */}
             <Statement onOpenContact={() => handleStartProject('business')} />
 
-            {/* Section 4: Capabilities & Core Offerings */}
+            {/* Section 4: Technical Stack — Core Technologies */}
+            <TechStack />
+
+            {/* Section 5: Capabilities & Core Offerings */}
             <Services
               onSelectServiceForContact={(serviceId) => handleStartProject(serviceId)}
               onNavigate={navigateTo}
@@ -272,7 +282,7 @@ export default function App() {
               breadcrumb="SERVICES & CAPABILITIES"
               pageNumber="03 / 04"
               title="Practice Areas & Delivery Capabilities"
-              description="Custom business websites, high-intent landing pages, e-commerce stores, mobile applications, and custom feature integrations engineered with clean React craftsmanship."
+              description="Custom business websites, high-intent landing pages, e-commerce stores, mobile applications, custom web applications, AI automation, SEO optimisation, and ongoing website maintenance."
               onBackToHome={() => navigateTo('/')}
             />
 

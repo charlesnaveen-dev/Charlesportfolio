@@ -185,77 +185,99 @@ export const services = [
       'Professional websites that help businesses build trust, showcase their services, and generate enquiries.',
     heroHeadline: 'Your Business Deserves a Better Website.',
     heroCopy:
-      'Build a professional online presence that communicates your value, earns customer trust, and makes it easier for people to enquire about your services.',
+      'Build a professional online presence that communicates your value, builds customer trust, and makes it easier for potential customers to enquire about your services.',
     heroCta: "LET'S DISCUSS YOUR WEBSITE",
-    overview:
-      'A great website is the digital foundation of your business. Whether you run a medical clinic, school, manufacturing enterprise, real estate firm, or regional service company, your website is where potential customers evaluate your credibility before deciding to enquire. I design and engineer custom, high-trust websites that communicate your strengths with authority, explain your services clearly, and make starting a conversation effortless.',
-    problemAndSuitability: [
+    platforms: ['Custom React', 'WordPress', 'Modern HTML5/CSS3', 'Responsive UI'],
+    businessChallenge: [
       {
-        title: 'Built for Service & Growth-Focused Businesses',
+        title: 'Unclear Value & Broken Credibility',
         description:
-          'Ideal for clinics, schools, manufacturers, real estate consultancies, and independent service providers who need an authoritative digital presence that reflects their real standard.'
+          'Many businesses lose potential customers before a conversation even begins because their website looks outdated, cluttered, or unclear about what they actually provide.'
       },
       {
-        title: 'Replacing Broken & Outdated Websites',
+        title: 'Clumsy Mobile Experiences',
         description:
-          'Eliminates slow-loading layouts, poor mobile ergonomics, and cluttered templates in favor of bespoke craftsmanship with high typographic contrast.'
+          'Over 60% of modern visitors browse from phones. Clunky navigation, slow load times, and misaligned buttons frustrate prospective clients and lead to high bounce rates.'
       },
       {
-        title: 'Turning Visitors into Direct Enquiries',
+        title: 'Friction in the Enquiry Journey',
         description:
-          'Converts visitor attention into verified enquiries through clear service breakdowns, frictionless contact forms, and instant WhatsApp chat routing.'
+          'When contact forms are buried or communication channels like WhatsApp are absent, interested prospects abandon the site instead of reaching out.'
+      }
+    ],
+    ourApproach:
+      'I treat your website as the primary commercial front door of your business. Whether built as a lightweight custom React application or an easy-to-manage WordPress platform, every project begins with structuring your information around your target client’s questions. We focus on clean visual hierarchy, rapid loading speeds, readable typography, and effortless contact pathways so visitors clearly understand your strengths and feel confident getting in touch.',
+    approachSteps: [
+      {
+        title: 'Audience & Message Alignment',
+        description: 'Mapping out your core offerings, differentiators, and customer questions before writing any code.'
+      },
+      {
+        title: 'Platform Selection Fit',
+        description: 'Recommending clean custom development or WordPress based on your content update habits and technical needs.'
+      },
+      {
+        title: 'Frictionless Conversion Architecture',
+        description: 'Placing clear calls to action, validated contact forms, and direct WhatsApp hooks where intent is highest.'
       }
     ],
     capabilitiesAndDeliverables: [
       {
-        title: 'Custom React Frontend Architecture',
+        title: 'Website Planning & Page Structure',
         description:
-          'Built from scratch with clean, semantic markup and zero heavy theme bloat for maximum stability.'
+          'Strategic sitemap definition, page hierarchy, and content outlines tailored to your business model.'
       },
       {
-        title: 'Cross-Device Responsive Layouts',
+        title: 'Custom Visual Design & Layouts',
         description:
-          'Meticulously tested across smartphones, tablets, laptops, and desktop viewports with fluid typography.'
+          'Distinctive, professional interface styling that communicates quality without resorting to generic templates.'
       },
       {
-        title: 'Dedicated Service & Credibility Pages',
+        title: 'Responsive Engineering for All Screens',
         description:
-          'Clear presentation of your core offerings, company credentials, certifications, and client proof.'
+          'Fine-tuned layouts thoroughly verified across mobile phones, tablets, laptops, and wide desktop viewports.'
       },
       {
-        title: 'Validated Forms & Direct WhatsApp Routing',
+        title: 'Core Business, Service & Credibility Pages',
         description:
-          'Anti-spam protected forms with email alerts and instant WhatsApp click-to-chat integration.'
+          'Dedicated pages to present your services, credentials, certifications, team background, and client proof.'
       },
       {
-        title: 'SEO Fundamentals & Schema Markup',
+        title: 'Contact Forms & WhatsApp Integration',
         description:
-          'Proper heading hierarchy, metadata, Open Graph cards, and structured schema data for search engines.'
+          'Validated enquiry forms with anti-spam protection, email notifications, and direct WhatsApp click-to-chat.'
       },
       {
-        title: 'Performance & Fast Visual Paint',
+        title: 'Basic On-Page SEO Setup',
         description:
-          'Optimized asset loading targeting sub-second LCP and zero unexpected layout shifts.'
+          'Search engine friendly semantic markup, heading hierarchy, meta descriptions, and Open Graph social cards.'
       },
       {
-        title: 'Production Deployment & SSL Setup',
+        title: 'Performance & Fast Visual Loading',
         description:
-          'Configured on global CDN infrastructure with custom domain routing and SSL security.'
+          'Optimised asset loading pipelines targeting sub-second visual paint to keep visitor engagement high.'
       },
       {
-        title: 'Transparent Project Deliverables',
+        title: 'Testing, Deployment & Handover',
         description:
-          'Exact scope, page count, and post-launch verification agreed upon clearly before development starts.'
+          'Comprehensive pre-launch testing, custom domain and SSL configuration, and walkthrough on managing your site.'
       }
+    ],
+    processStages: [
+      { step: '01', title: 'Discovery & Brief', desc: 'Understanding your business goals, target audience, and required page scope.' },
+      { step: '02', title: 'Structure & Content', desc: 'Organising page layouts, content hierarchy, and call-to-action pathways.' },
+      { step: '03', title: 'Development', desc: 'Building responsive, fast-loading frontend interfaces with clean markup.' },
+      { step: '04', title: 'Review & Integration', desc: 'Testing forms, WhatsApp hooks, cross-browser compatibility, and client review.' },
+      { step: '05', title: 'Launch & Handover', desc: 'Connecting your domain, setting up security certificates, and final handover.' }
     ],
     relevantProjects: ['bexley-lifescience', 'jeeva-jee-builders', 'lara-smiles'],
     closingHeadline: 'Ready to Build Something Better?',
     closingCopy:
-      "Tell me about your project, your goals, and what you need. Let's discuss the right solution for your business.",
+      "Tell me about your business, your goals, and what you need. Let's discuss the right website solution for your organisation.",
     closingCta: 'DISCUSS YOUR WEBSITE',
     metaTitle: 'Website Design & Development — Charles Naveen | Freelance Web Developer',
     metaDescription:
-      'Professional business and corporate websites engineered to build trust, showcase services, and generate customer enquiries with fast, responsive React craftsmanship.'
+      'Professional business and corporate websites engineered to build trust, showcase services, and generate customer enquiries with fast, responsive craftsmanship.'
   },
   {
     number: '02',
@@ -268,66 +290,88 @@ export const services = [
     heroCopy:
       'Turn outdated layouts and unclear messaging into focused digital experiences that help visitors understand your offer and take the next step.',
     heroCta: "LET'S IMPROVE YOUR WEBSITE",
-    overview:
-      'If your current website feels dated, performs poorly on mobile screens, or fails to convert campaign traffic into qualified leads, a targeted redesign or dedicated landing page can transform your outcomes. I modernise outdated websites to restore clarity and speed, and create focused single-page landing experiences for product launches, ad campaigns, and high-priority business offers.',
-    problemAndSuitability: [
+    platforms: ['Campaign Pages', 'Full Redesign', 'Mobile UX Overhaul', 'Speed Refactor'],
+    businessChallenge: [
       {
-        title: 'High-Intent Ad & Marketing Campaigns',
+        title: 'Wasted Ad Spend & Low Campaign Return',
         description:
-          'Engineered for Google Ads, Meta campaigns, and promotional launches where load speed and message clarity directly protect your advertising budget.'
+          'Sending paid Google or Meta traffic to an unfocused homepage causes high drop-offs because visitors cannot quickly identify the specific offer.'
       },
       {
-        title: 'Modernising Outdated Business Websites',
+        title: 'Lagging, Outdated Website Aesthetics',
         description:
-          'Designed for established businesses whose current web presence was built years ago and fails to match their current reputation and scale.'
+          'An old website built five years ago often fails to convey the current scale, professionalism, and quality standard of an established business.'
       },
       {
-        title: 'Eliminating Mobile Friction & High Bounce',
+        title: 'Cluttered Content & Hidden Actions',
         description:
-          'Solves awkward mobile menus, unreadable font sizes, misaligned buttons, and sluggish response times that drive visitors away.'
+          'Overloaded pages with dense text blocks and buried contact buttons leave visitors confused about what step to take next.'
+      }
+    ],
+    ourApproach:
+      'A successful redesign or campaign landing page is not just a coat of paint; it is an exercise in ruthless clarity. I strip away visual noise, establish a clear typographic hierarchy, and craft a single, persuasive narrative from top to bottom. For marketing campaigns, we engineer distraction-free pages built around rapid comprehension. For redesigns, we preserve existing domain authority and URLs while overhauling the visual presentation, mobile ergonomics, and loading speeds.',
+    approachSteps: [
+      {
+        title: 'Friction & Flow Audit',
+        description: 'Analysing where current visitors lose momentum, encounter visual clutter, or abandon the enquiry flow.'
+      },
+      {
+        title: 'Single-Minded Hierarchy',
+        description: 'Restructuring headings, proof points, and visual assets so visitors absorb your core offer within seconds.'
+      },
+      {
+        title: 'Sub-Second Speed Targets',
+        description: 'Optimising scripts and assets to eliminate load delays that cause mobile ad visitors to bounce.'
       }
     ],
     capabilitiesAndDeliverables: [
       {
-        title: 'UX & Performance Friction Audit',
+        title: 'Existing Website or Campaign Brief Review',
         description:
-          'Thorough analysis of layout bottlenecks, drop-off points, mobile pain points, and Core Web Vitals issues.'
+          'Comprehensive audit of current pain points, competitor benchmarks, and specific campaign targets.'
       },
       {
-        title: 'High-Intent Campaign Page Architecture',
+        title: 'Updated Page Structure & Content Hierarchy',
         description:
-          'Distraction-free headline hierarchy, benefit summaries, proof elements, and clear decision pathways.'
+          'Restructured content flow designed to guide visitors logically from headline to proof to action.'
       },
       {
-        title: 'Modern Typography & Editorial Layout',
+        title: 'Visual Redesign & Responsive Implementation',
         description:
-          'Balanced font pairings, generous whitespace, and sharp contrast that make scanning intuitive.'
+          'Modern typographic styling, generous whitespace, and mobile-first layouts that look sharp on all screens.'
       },
       {
-        title: 'Mobile Ergonomics Overhaul',
+        title: 'Improved CTA Placement & Form Usability',
         description:
-          'Thumb-friendly tap targets, sticky call-to-action triggers, and fluid layouts built for modern phones.'
+          'High-contrast action triggers, simplified enquiry fields, and direct WhatsApp pathways that reduce hesitation.'
       },
       {
-        title: 'Core Web Vitals & Sub-Second LCP',
+        title: 'Performance & Speed Optimisation',
         description:
-          'Optimised code structure targeting sub-second visual paint to eliminate visitor bounce.'
+          'Asset compression, clean code refactoring, and Core Web Vitals checks to reduce visual load times.'
       },
       {
-        title: 'Strategic Lead Capture & WhatsApp Hooks',
+        title: 'Basic Accessibility & Readability Checks',
         description:
-          'Lightweight enquiry forms and pre-filled WhatsApp links placed at key decision moments.'
+          'Contrast verification, accessible touch targets, and legible typography scales for effortless reading.'
       },
       {
-        title: 'Analytics & Attribution Readiness',
+        title: 'Analytics & Tracking Readiness',
         description:
           'Clean markup prepared for Google Analytics 4, Meta Pixel, and conversion event tracking.'
       },
       {
-        title: 'Smooth Migration with Zero Downtime',
+        title: 'Launch Support & URL Transition',
         description:
-          'Preserved URL structures, proper redirects where required, and continuous uptime during launch.'
+          'Careful deployment support ensuring zero downtime and preserved search engine links during launch.'
       }
+    ],
+    processStages: [
+      { step: '01', title: 'Audit & Analysis', desc: 'Reviewing existing website bottlenecks or campaign requirements.' },
+      { step: '02', title: 'Hierarchy Blueprint', desc: 'Crafting the revised content structure and high-impact CTA placement.' },
+      { step: '03', title: 'Visual Redesign', desc: 'Translating concepts into modern, mobile-friendly interfaces.' },
+      { step: '04', title: 'Speed & UX Tuning', desc: 'Ensuring sub-second visual paint and frictionless touch interactions.' },
+      { step: '05', title: 'Deployment', desc: 'Seamless launch with analytics tags and verification checks.' }
     ],
     relevantProjects: ['bexley-lifescience', 'dwings-fashion'],
     closingHeadline: 'Ready to Turn Visits Into Opportunities?',
@@ -342,80 +386,102 @@ export const services = [
     number: '03',
     id: 'ecommerce',
     slug: '/services/ecommerce',
-    title: 'E-commerce Website Development',
+    title: 'E-commerce Development',
     shortDescription:
       'Online stores designed to showcase products, simplify shopping, and help businesses sell online.',
-    heroHeadline: 'Take Your Business Online.',
+    heroHeadline: 'Turn Your Products Into an Online Store.',
     heroCopy:
-      'Create a convenient shopping experience where customers can explore your products, place orders, and purchase through a website built around your business needs.',
+      'Create an online shopping experience that makes products easier to discover, simplifies checkout, and supports your business’s selling process.',
     heroCta: "LET'S BUILD YOUR ONLINE STORE",
-    overview:
-      'Selling products online requires more than just listing items in a grid. Customers expect fast search, crisp imagery, clear specifications, and a frictionless path from product discovery to purchase. I build clean, reliable e-commerce websites and digital product catalogues tailored to your specific business model—whether you sell boutique retail goods, handcrafted designer collections, or wholesale B2B product lines.',
-    problemAndSuitability: [
+    platforms: ['Shopify', 'WooCommerce', 'Custom Catalogues', 'Payment Gateways'],
+    businessChallenge: [
       {
-        title: 'Boutique Brands & Independent Retailers',
+        title: 'Cluttered Product Discovery',
         description:
-          'Ideal for fashion ateliers, specialty creators, and consumer brands that require an editorial showcase rather than generic marketplace grids.'
+          'When products lack intuitive categories or clear filtering, shoppers struggle to find what they want and leave for competitors.'
       },
       {
-        title: 'Wholesale & B2B Product Catalogues',
+        title: 'Complex Checkout Drop-Offs',
         description:
-          'Tailored for manufacturers and distributors needing structured category browsing and direct wholesale enquiry workflows.'
+          'Multi-step, confusing checkout screens with unexpected delays or poorly adapted mobile inputs are the leading cause of abandoned carts.'
       },
       {
-        title: 'Replacing Slow & Cluttered Templates',
+        title: 'Platform Mismatch for Business Model',
         description:
-          'Replaces laggy, plugin-heavy platforms with clean, custom code that loads instantaneously across mobile networks.'
+          'Businesses often get locked into overly complex platforms when a straightforward Shopify store, WooCommerce setup, or custom catalogue would serve them better.'
+      }
+    ],
+    ourApproach:
+      'Every e-commerce project must balance product storytelling with transactional efficiency. Depending on your inventory scale and operational preferences, I build using trusted platforms like Shopify, WooCommerce, or bespoke React catalogues for wholesale and boutique brands. We focus on structured catalogue navigation, crisp product imagery, transparent pricing, and a smooth checkout flow that makes purchasing convenient across desktop and mobile devices.',
+    approachSteps: [
+      {
+        title: 'Platform Recommendation',
+        description: 'Selecting Shopify, WooCommerce, or custom architecture based on your inventory size, payment needs, and technical comfort.'
+      },
+      {
+        title: 'Catalogue & Discovery Design',
+        description: 'Organising categories, product variants, and search filters so customers locate products effortlessly.'
+      },
+      {
+        title: 'Streamlined Purchasing UX',
+        description: 'Configuring clear cart summaries, mobile-friendly payment inputs, and automated order notifications.'
       }
     ],
     capabilitiesAndDeliverables: [
       {
-        title: 'Structured Product & Category Catalog',
+        title: 'Store Setup & Visual Customisation',
         description:
-          'Organised product hierarchies, intuitive filtering, search capabilities, and variant handling (sizes, colors).'
+          'Complete store setup, brand styling, navigation configuration, and layout customisation.'
       },
       {
-        title: 'Editorial Product Presentation',
+        title: 'Product Catalogue Structure',
         description:
-          'High-resolution image galleries, detailed specifications, stock status, and clear purchase triggers.'
+          'Logical taxonomy, category hierarchies, product variant rules (sizes, colors), and inventory grouping.'
       },
       {
-        title: 'Streamlined Cart & Checkout Experience',
+        title: 'Product & Category Pages',
         description:
-          'Fast slide-out cart drawer, transparent price summaries, address fields, and minimal checkout steps.'
+          'High-resolution image showcases, detailed specification tables, stock status indicators, and clear buying actions.'
       },
       {
-        title: 'Secure Payment Gateway Integration',
+        title: 'Shopping Cart & Checkout Configuration',
         description:
-          'Integration with verified payment gateways (Razorpay, Stripe, or direct bank transfer/UPI) per project scope.'
+          'Frictionless slide-out cart drawer, transparent totals, address fields, and minimal checkout steps.'
       },
       {
-        title: 'Order Management & Team Notifications',
+        title: 'Payment Gateway Integration',
         description:
-          'Instant transactional order confirmation emails for customers and immediate alerts for your fulfillment team.'
+          'Configuration of verified payment providers (such as Razorpay, Stripe, or direct bank transfer/UPI) per project scope.'
       },
       {
-        title: 'Mobile-First Shopping Ergonomics',
+        title: 'Order Management & Notifications',
         description:
-          'Engineered for thumb navigation, quick taps, and fluid scrolling with zero layout jumping.'
+          'Automated customer order confirmation emails and real-time order alerts sent directly to your management team.'
       },
       {
-        title: 'Direct Purchase or B2B Quote Routing',
+        title: 'Mobile Shopping Usability Testing',
         description:
-          'Configured for direct online payment or enquiry-based wholesale quoting depending on your commercial model.'
+          'Hands-on testing for thumb navigation, quick add-to-cart interactions, and smooth mobile checkout.'
       },
       {
-        title: 'Clear Technical & Scope Boundaries',
+        title: 'Handover & Store Management Guidance',
         description:
-          'Transparent planning around inventory scale, transaction workflows, and management requirements.'
+          'Clear guidance on adding new products, updating inventory, managing orders, and handling discounts.'
       }
+    ],
+    processStages: [
+      { step: '01', title: 'Commerce Scope', desc: 'Defining inventory size, platform choice, payment methods, and shipping workflows.' },
+      { step: '02', title: 'Catalogue Architecture', desc: 'Structuring categories, attributes, product templates, and checkout requirements.' },
+      { step: '03', title: 'Store Build & Styling', desc: 'Configuring the platform, implementing brand styles, and setting up core pages.' },
+      { step: '04', title: 'Payment & Order Testing', desc: 'Running test transactions, verifying customer emails, and checking mobile checkout.' },
+      { step: '05', title: 'Store Launch', desc: 'Connecting custom domains, final payment gateway verification, and store handover.' }
     ],
     relevantProjects: ['dwings-fashion', 'bexley-lifescience'],
     closingHeadline: 'Ready to Launch Your Online Store?',
     closingCopy:
       "Tell me about the products you sell, your target customers, and how you want to handle orders. Let's build an e-commerce experience that fits your business.",
     closingCta: 'DISCUSS YOUR ONLINE STORE',
-    metaTitle: 'E-commerce Website Development — Charles Naveen | Freelance Web Developer',
+    metaTitle: 'E-commerce Development — Charles Naveen | Freelance Web Developer',
     metaDescription:
       'Custom online stores and product showcases designed to simplify browsing, checkout, and online order management for modern businesses.'
   },
@@ -430,66 +496,88 @@ export const services = [
     heroCopy:
       'Turn your idea into a practical mobile experience with thoughtful interfaces, useful features, and the integrations your product needs.',
     heroCta: "LET'S DISCUSS YOUR APP",
-    overview:
-      'Building a successful mobile application begins with clarifying what your users truly need. Instead of getting bogged down in complex feature bloat that delays launch, I focus on building intuitive, user-focused mobile applications that solve core problems, run reliably on actual mobile devices, and connect cleanly to your backend services and APIs.',
-    problemAndSuitability: [
+    platforms: ['React Native', 'Cross-Platform', 'Mobile APIs', 'User Journeys'],
+    businessChallenge: [
       {
-        title: 'Founders & Product MVPs',
+        title: 'Over-Engineering & Delayed Launch',
         description:
-          'Built for entrepreneurs and businesses needing a focused Minimum Viable Product to validate an idea and test user traction quickly.'
+          'Founders and businesses often try to build too many complex features upfront, causing budgets to inflate and delaying real user feedback.'
       },
       {
-        title: 'Internal Business & Field Tools',
+        title: 'Poor Device Performance & Clunky UI',
         description:
-          'Suitable for companies needing custom mobile screens for field data entry, client check-ins, or order tracking.'
+          'Apps that do not adapt gracefully to varying screen sizes, touch targets, and offline network moments quickly get uninstalled.'
       },
       {
-        title: 'Service Companion & Booking Apps',
+        title: 'Backend Integration Complexity',
         description:
-          'Great for clinics and service providers seeking a direct, branded mobile interface for appointments and customer updates.'
+          'Connecting mobile screens to databases, authentication providers, and third-party APIs requires careful architectural boundaries.'
+      }
+    ],
+    ourApproach:
+      'I approach mobile app development with an emphasis on essential utility and iterative execution. Rather than building bloated monolithic systems, we focus on identifying the core user problem and building a practical Minimum Viable Product (MVP) or targeted business tool. Using modern cross-platform engineering, we create clean, responsive interfaces that run smoothly, consume APIs efficiently, and deliver a reliable experience to your users.',
+    approachSteps: [
+      {
+        title: 'MVP Scope Definition',
+        description: 'Isolating the primary user workflows and must-have features needed for a successful initial release.'
+      },
+      {
+        title: 'Ergonomic Screen Flows',
+        description: 'Designing intuitive screen transitions, thumb-friendly navigation, and clear visual feedback.'
+      },
+      {
+        title: 'Dependable API Connectivity',
+        description: 'Hooking up cloud databases, user authentication, and endpoints with clean data handling.'
       }
     ],
     capabilitiesAndDeliverables: [
       {
-        title: 'Mobile UI/UX & Core Screen Design',
+        title: 'Requirements & Feature Planning',
         description:
-          'Intuitive interface layouts, wireframing, and user journeys designed specifically for handheld navigation.'
+          'Translating your concept into clear screen specifications, user journeys, and technical milestones.'
       },
       {
-        title: 'Essential Feature Implementation',
+        title: 'App Interface & Screen Development',
         description:
-          'Focused engineering of verified primary user flows, authentication, account profiles, and status dashboards.'
+          'Clean, consistent mobile screen design engineered for modern Android and iOS viewport resolutions.'
       },
       {
-        title: 'RESTful API & Backend Connectivity',
+        title: 'Core Feature Implementation',
         description:
-          'Clean integration with external web services, data endpoints, and third-party APIs.'
+          'Development of primary workflows, user dashboards, interactive inputs, and content feeds.'
       },
       {
-        title: 'Database Integration & Persistence',
+        title: 'Backend & API Integration',
         description:
-          'Connection to modern cloud databases (such as Supabase or PostgreSQL) for secure user data storage.'
+          'Connecting frontend screens to RESTful APIs, cloud endpoints, and third-party web services.'
       },
       {
-        title: 'Cross-Device Testing & Verification',
+        title: 'Data Handling & User Authentication',
         description:
-          'Hands-on testing across actual device viewports, aspect ratios, and varying network conditions.'
+          'Secure login workflows, session persistence, and database connectivity (e.g. Supabase, PostgreSQL).'
       },
       {
-        title: 'Staging & Deployment Support',
+        title: 'Testing & Device Compatibility Checks',
         description:
-          'Packaging, staging environments for client review, and deployment assistance aligned with project scope.'
+          'Rigorous verification on real mobile devices to confirm responsive touch targets and performance.'
       },
       {
-        title: 'Honest Platform Capabilities',
+        title: 'Deployment & Staging Support',
         description:
-          'Transparent evaluation of technical feasibility, supported platforms, and project requirements before coding begins.'
+          'Setting up test builds, staging environments for client review, and release packaging per project scope.'
       },
       {
-        title: 'Custom-Scoped Engineering',
+        title: 'Technical Feasibility Consultation',
         description:
-          'Defined feature milestones and agreed technical stacks without over-promising or unverified claims.'
+          'Honest evaluation of whether your product is best suited as a progressive web app, hybrid build, or native app.'
       }
+    ],
+    processStages: [
+      { step: '01', title: 'Concept & Scope', desc: 'Defining essential app features, target users, and supported device platforms.' },
+      { step: '02', title: 'Wireframes & UI', desc: 'Designing screen wireframes, visual components, and interactive navigation flows.' },
+      { step: '03', title: 'App Engineering', desc: 'Developing frontend screens, state logic, and user input validation.' },
+      { step: '04', title: 'API & Data Wiring', desc: 'Integrating backend APIs, database connections, and authentication services.' },
+      { step: '05', title: 'Testing & Build Packaging', desc: 'Device testing, client staging review, and build deployment guidance.' }
     ],
     relevantProjects: [],
     honestNote:
@@ -504,84 +592,415 @@ export const services = [
   },
   {
     number: '05',
-    id: 'custom-integrations',
-    slug: '/services/custom-integrations',
-    title: 'Custom Features & AI Integrations',
+    id: 'custom-web-apps',
+    slug: '/services/custom-web-apps',
+    title: 'Custom Web Applications',
     shortDescription:
-      'Add useful website features, AI assistants, and business integrations that reduce manual work and improve customer interactions.',
-    heroHeadline: 'Make Your Website Work Smarter.',
+      'Software built around the way your business works, from internal portals to custom client workflows.',
+    heroHeadline: 'Software Built Around the Way Your Business Works.',
     heroCopy:
-      'Connect the tools your business relies on and introduce useful features that simplify enquiries, reduce repetitive tasks, and improve customer interactions.',
-    heroCta: "LET'S AUTOMATE YOUR WORKFLOW",
-    overview:
-      'A website can do much more than sit as an online brochure. When connected with the right tools, it becomes an automated team member that handles initial enquiries, qualifies prospective clients, books appointments, and routes data to your phone or database. I engineer custom website features and practical AI integrations that save staff time and improve customer responsiveness.',
-    problemAndSuitability: [
+      'Build practical web applications that organise information, simplify workflows, and support the specific processes your business relies on.',
+    heroCta: "LET'S BUILD YOUR APPLICATION",
+    platforms: ['React / Next.js', 'Supabase / PostgreSQL', 'Custom Dashboards', 'RESTful APIs'],
+    businessChallenge: [
       {
-        title: 'Repetitive Customer FAQs & Queries',
+        title: 'Inefficient Spreadsheets & Disjointed Tools',
         description:
-          'Ideal for businesses spending excessive time answering the same basic questions regarding services, pricing, hours, or locations.'
+          'Managing customer records, bookings, or internal operations across fragmented spreadsheets leads to duplicated work and lost records.'
       },
       {
-        title: 'Frictionless Appointment & Consultation Booking',
+        title: 'Off-the-Shelf Software Doesn’t Fit',
         description:
-          'For clinics, consultants, and service providers who need clients to schedule appointments directly without back-and-forth messaging.'
+          'Commercial SaaS platforms often come with rigid features you do not need, while missing the exact custom workflows your business requires.'
       },
       {
-        title: 'Bridging Disconnected Business Tools',
+        title: 'Lack of Real-Time Information Access',
         description:
-          'Connects website enquiries directly into WhatsApp, email inboxes, Google Sheets, or CRM systems to eliminate lost leads.'
+          'Teams struggle to collaborate effectively without a centralised, secure web portal where client data and project statuses are immediately accessible.'
+      }
+    ],
+    ourApproach:
+      'I engineer custom web applications that mirror your exact business processes. Whether you need an appointment booking portal, a specialised internal dashboard, or a lightweight customer relationship tool, we design a modular system that is intuitive for your team and straightforward to maintain. Using modern web frameworks and reliable relational databases, we focus on clean data models, robust validation, and rapid response times.',
+    approachSteps: [
+      {
+        title: 'Workflow Mapping',
+        description: 'Documenting the exact steps, roles, and data points your application needs to handle.'
+      },
+      {
+        title: 'Clean Database Schema',
+        description: 'Designing structured tables and relations in PostgreSQL or Supabase for reliable data integrity.'
+      },
+      {
+        title: 'Intuitive Dashboard UI',
+        description: 'Building clean, high-contrast screens that make managing complex information straightforward.'
       }
     ],
     capabilitiesAndDeliverables: [
       {
-        title: 'Interactive Consultation & Booking Flows',
+        title: 'Requirements & Workflow Planning',
         description:
-          'Custom multi-step booking forms, treatment filters, date preferences, and immediate confirmation summaries.'
+          'Detailed architecture planning, user role definitions, and entity relationship diagrams.'
       },
       {
-        title: 'Database-Connected Web Functionality',
+        title: 'Application Interface & Core Screens',
         description:
-          'Secure database integration (e.g. Supabase, PostgreSQL) for recording client submissions and enquiry history.'
+          'Custom-built dashboard layouts, data tables, filtering controls, and interactive modal dialogs.'
       },
       {
-        title: 'WhatsApp Automation & Click-to-Chat',
+        title: 'Database Design & Integration',
         description:
-          'Pre-formatted WhatsApp chat triggers passing customer details directly to your mobile device.'
+          'Relational database architecture using Supabase or PostgreSQL with proper indexing and data validation.'
       },
       {
-        title: 'AI Chatbots for 24/7 Customer Triage',
+        title: 'Backend & API Development',
         description:
-          'Intelligent conversational assistants configured to answer common business FAQs and gather contact details.'
+          'Secure serverless endpoints and business logic for processing transactions and updating records.'
       },
       {
-        title: 'Transactional Email Dispatch & Webhooks',
+        title: 'Authentication & Access Controls',
         description:
-          'Instant notifications dispatched via Resend or webhooks to alert your team immediately upon submission.'
+          'User signup, email verification, session management, and role-based permissions where required.'
       },
       {
-        title: 'Third-Party Software Connectors',
+        title: 'Interactive Booking & Management Portals',
         description:
-          'Linking website activity to external business tools, Google Sheets, or notification systems where technically feasible.'
+          'Multi-step scheduling flows, customer intake forms, and automated status confirmation alerts.'
       },
       {
-        title: 'Spam Protection & Input Sanitisation',
+        title: 'Quality Testing & Edge Case Handling',
         description:
-          'Honeypot protection and validation to ensure only genuine customer enquiries reach your inbox.'
+          'Validation of inputs, error boundaries, and responsiveness checks across desktop and mobile screens.'
       },
       {
-        title: 'Feasibility-First Automation Scope',
+        title: 'Deployment & Administrative Handover',
         description:
-          'Clear assessment of API reliability, operational costs, and technical boundaries before implementation.'
+          'Hosting setup on secure cloud infrastructure, environment variable configuration, and staff walkthrough.'
       }
     ],
+    processStages: [
+      { step: '01', title: 'Workflow Blueprint', desc: 'Defining the specific problem, user permissions, and required data workflows.' },
+      { step: '02', title: 'Data Architecture', desc: 'Designing database tables, API contracts, and screen wireframes.' },
+      { step: '03', title: 'Frontend & Logic Build', desc: 'Engineering interactive dashboards, form validation, and state management.' },
+      { step: '04', title: 'Integration & Testing', desc: 'Connecting database endpoints, verifying security rules, and user testing.' },
+      { step: '05', title: 'Deployment & Walkthrough', desc: 'Deploying to production cloud hosting and providing full administrator guidance.' }
+    ],
     relevantProjects: ['lara-smiles', 'evara-aesthetics'],
-    closingHeadline: 'Ready to Make Your Website Work Smarter?',
+    closingHeadline: 'Ready to Streamline Your Business Operations?',
+    closingCopy:
+      "Tell me about the specific processes you want to organise or the custom tool your business needs. Let's discuss an efficient solution.",
+    closingCta: 'DISCUSS YOUR APPLICATION',
+    metaTitle: 'Custom Web Applications — Charles Naveen | Freelance Web Developer',
+    metaDescription:
+      'Practical custom web applications, business dashboards, and booking portals engineered with clean React and database craftsmanship.'
+  },
+  {
+    number: '06',
+    id: 'ai-business-automation',
+    slug: '/services/ai-business-automation',
+    title: 'AI & Business Automation',
+    shortDescription:
+      'Connect useful AI capabilities and business tools to reduce repetitive tasks, streamline enquiries, and support everyday workflows.',
+    heroHeadline: 'Make Your Business Work Smarter.',
+    heroCopy:
+      'Connect useful AI capabilities and business tools to reduce repetitive tasks, streamline enquiries, and support everyday workflows.',
+    heroCta: "LET'S AUTOMATE YOUR WORKFLOW",
+    platforms: ['AI Chatbots', 'WhatsApp Automation', 'Email Dispatch', 'Webhooks & APIs'],
+    businessChallenge: [
+      {
+        title: 'Time Lost on Repetitive Customer FAQs',
+        description:
+          'Business owners and staff frequently spend multiple hours every day answering identical questions about service packages, pricing, clinic hours, or locations.'
+      },
+      {
+        title: 'Delayed Follow-Up on Inbound Leads',
+        description:
+          'When enquiry forms simply send a generic email that sits unread for hours, prospective clients move on to competitors who respond immediately.'
+      },
+      {
+        title: 'Manual Data Entry Between Systems',
+        description:
+          'Copying contact information manually from website emails into spreadsheets, CRMs, or team messaging apps introduces human errors and bottlenecks.'
+      }
+    ],
+    ourApproach:
+      'I approach AI and business automation with a focus on practical utility rather than hype. We distinguish between three distinct solutions: a context-trained AI chatbot for answering customer FAQs 24/7, an AI-assisted lead qualification assistant, and multi-step workflow automation connecting your website to tools like WhatsApp, email, or CRMs. Every integration is evaluated for technical feasibility, reliability, and ongoing running costs before implementation.',
+    approachSteps: [
+      {
+        title: 'Feasibility & Task Audit',
+        description: 'Pinpointing repetitive administrative tasks that can be safely automated without frustrating customers.'
+      },
+      {
+        title: 'Contextual AI Tuning',
+        description: 'Configuring AI assistants with strict boundaries and verified business documentation to prevent hallucinations.'
+      },
+      {
+        title: 'Reliable Pipeline Wiring',
+        description: 'Setting up webhooks and notification dispatch so enquiries reach your team instantly on their preferred channel.'
+      }
+    ],
+    capabilitiesAndDeliverables: [
+      {
+        title: 'Workflow & Automation Opportunity Review',
+        description:
+          'Audit of your current enquiry handling process to identify high-impact automation opportunities.'
+      },
+      {
+        title: 'Context-Aware AI Chatbot Integration',
+        description:
+          'Intelligent conversational assistant trained on your business FAQs, services, and policies to assist visitors 24/7.'
+      },
+      {
+        title: 'AI-Assisted Customer Triage & Qualification',
+        description:
+          'Automated gathering of customer requirements and contact details before escalating to a human team member.'
+      },
+      {
+        title: 'WhatsApp Click-to-Chat & Pre-Filled Flows',
+        description:
+          'Direct WhatsApp chat links with pre-formatted enquiry parameters that pass customer intent directly to your phone.'
+      },
+      {
+        title: 'Transactional Email Dispatch via Resend',
+        description:
+          'Instant notifications and branded confirmation emails dispatched to customers and internal team members.'
+      },
+      {
+        title: 'Supported CRM & Spreadsheet Connections',
+        description:
+          'Webhook synchronization pushing website submissions automatically into Google Sheets, Notion, or CRM tools.'
+      },
+      {
+        title: 'Honeypot Anti-Spam Protection',
+        description:
+          'Silent honeypot filters and validation layers to ensure automated spam does not pollute your database or alerts.'
+      },
+      {
+        title: 'Testing & Handover Guidance',
+        description:
+          'End-to-end verification of all automated pathways and instructions on updating your assistant knowledge base.'
+      }
+    ],
+    processStages: [
+      { step: '01', title: 'Automation Audit', desc: 'Evaluating your enquiry journey and defining exact automation boundaries.' },
+      { step: '02', title: 'Knowledge Base Setup', desc: 'Compiling verified business documentation, FAQs, and response tone.' },
+      { step: '03', title: 'Pipeline Integration', desc: 'Connecting AI endpoints, WhatsApp routing, and transactional email dispatch.' },
+      { step: '04', title: 'Testing & Validation', desc: 'Running simulated enquiries, edge-case testing, and verifying notifications.' },
+      { step: '05', title: 'Deployment & Monitoring', desc: 'Launching the workflow and monitoring initial customer interactions.' }
+    ],
+    relevantProjects: ['lara-smiles', 'evara-aesthetics'],
+    closingHeadline: 'Ready to Make Your Business Work Smarter?',
     closingCopy:
       "Tell me about the repetitive tasks in your business or the integrations you need. Let's find practical, dependable ways to automate them.",
-    closingCta: 'DISCUSS YOUR INTEGRATION',
-    metaTitle: 'Custom Features & AI Integrations — Charles Naveen | Freelance Web Developer',
+    closingCta: 'DISCUSS YOUR AUTOMATION',
+    metaTitle: 'AI & Business Automation — Charles Naveen | Freelance Web Developer',
     metaDescription:
-      'Interactive booking flows, database features, WhatsApp routing, and AI chatbots that automate repetitive workflows and improve client interactions.'
+      'Practical AI chatbots, WhatsApp enquiry routing, and automated business workflows that eliminate repetitive tasks and streamline customer communication.'
+  },
+  {
+    number: '07',
+    id: 'seo-optimisation',
+    slug: '/services/seo-optimisation',
+    title: 'SEO & Website Optimisation',
+    shortDescription:
+      'Improve the technical foundations of your website so search engines can understand its content and visitors can use it more effectively.',
+    heroHeadline: 'Build a Stronger Foundation for Search and Performance.',
+    heroCopy:
+      'Improve the technical foundations of your website so search engines can understand its content and visitors can use it more effectively.',
+    heroCta: "LET'S OPTIMISE YOUR WEBSITE",
+    platforms: ['Technical SEO', 'Core Web Vitals', 'Structured Data', 'Asset Compression'],
+    businessChallenge: [
+      {
+        title: 'Search Engines Can’t Parse Your Content',
+        description:
+          'Websites with missing meta tags, broken heading hierarchies, unconfigured sitemaps, or JavaScript rendering issues fail to be indexed accurately by Google.'
+      },
+      {
+        title: 'Sluggish Load Times & Poor Core Web Vitals',
+        description:
+          'Oversized uncompressed images and bloated scripts result in high Largest Contentful Paint (LCP) scores, penalising both search ranking and mobile user retention.'
+      },
+      {
+        title: 'Unstructured Social Previews & Broken Cards',
+        description:
+          'Sharing your website links on WhatsApp, LinkedIn, or Twitter without proper Open Graph tags produces broken images or generic snippets that fail to attract clicks.'
+      }
+    ],
+    ourApproach:
+      'I treat SEO and website optimisation as a rigorous engineering discipline rather than guesswork. Search engines reward websites that are technically sound, rapidly accessible, and structured with clean semantic markup. I perform a comprehensive audit of your website’s technical foundations, resolve crawlability hurdles, optimise your assets, implement structured schema data, and improve Core Web Vitals so both search engines and real human visitors have an exceptional experience.',
+    approachSteps: [
+      {
+        title: 'Technical Foundation Audit',
+        description: 'Inspecting crawl errors, canonical URLs, robots.txt, metadata consistency, and server response speeds.'
+      },
+      {
+        title: 'Asset & Pipeline Compression',
+        description: 'Converting heavy images to modern WebP formats, deferring non-critical scripts, and eliminating layout shifts.'
+      },
+      {
+        title: 'Rich Structured Data',
+        description: 'Implementing schema.org JSON-LD tags so search engines clearly identify your business, services, and location.'
+      }
+    ],
+    capabilitiesAndDeliverables: [
+      {
+        title: 'Comprehensive Technical Website Audit',
+        description:
+          'In-depth assessment of crawlability, indexing status, canonical tags, and structural bottlenecks.'
+      },
+      {
+        title: 'Metadata & Heading Hierarchy Review',
+        description:
+          'Optimising title tags, unique meta descriptions, and logical H1-H4 heading structures across core pages.'
+      },
+      {
+        title: 'Indexing & Crawlability Verification',
+        description:
+          'Setting up clean XML sitemaps, robots.txt rules, search console verification, and 301 redirect validation.'
+      },
+      {
+        title: 'Image & Asset Loading Optimisation',
+        description:
+          'Responsive image sizing, modern compression formats, and lazy-loading implementation to slash page weight.'
+      },
+      {
+        title: 'Core Web Vitals Measurements & Fixes',
+        description:
+          'Targeted improvements for Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).'
+      },
+      {
+        title: 'Structured Schema.org (JSON-LD) Markup',
+        description:
+          'Rich schema tags for Organization, LocalBusiness, ProfessionalService, and WebSite entities.'
+      },
+      {
+        title: 'Open Graph & Social Share Card Setup',
+        description:
+          'Crisp preview images, accurate titles, and descriptions configured for WhatsApp, LinkedIn, and social platforms.'
+      },
+      {
+        title: 'Accessibility & Readability Checks',
+        description:
+          'Colour contrast verification, descriptive alt tags, and keyboard navigable landmarks within project scope.'
+      }
+    ],
+    processStages: [
+      { step: '01', title: 'Audit & Benchmark', desc: 'Measuring current page speed, indexing coverage, and technical SEO bottlenecks.' },
+      { step: '02', title: 'On-Page Structure', desc: 'Refactoring heading levels, title tags, meta descriptions, and semantic markup.' },
+      { step: '03', title: 'Asset Optimisation', desc: 'Compressing images, eliminating render-blocking scripts, and stabilising layouts.' },
+      { step: '04', title: 'Schema & Social Cards', desc: 'Deploying structured JSON-LD data and Open Graph preview configurations.' },
+      { step: '05', title: 'Validation & Report', desc: 'Running post-implementation verification tests and delivering a clear optimisation report.' }
+    ],
+    relevantProjects: ['bexley-lifescience'],
+    closingHeadline: 'Ready to Strengthen Your Website’s Foundations?',
+    closingCopy:
+      "Share your current website URL. Let's run a technical audit and identify practical improvements to enhance your visibility and performance.",
+    closingCta: 'REQUEST A TECHNICAL AUDIT',
+    metaTitle: 'SEO & Website Optimisation — Charles Naveen | Freelance Web Developer',
+    metaDescription:
+      'Improve your website’s search readiness and speed with technical SEO audits, Core Web Vitals optimisation, and clean structured data.'
+  },
+  {
+    number: '08',
+    id: 'website-maintenance',
+    slug: '/services/website-maintenance',
+    title: 'Website Maintenance & Support',
+    shortDescription:
+      'Keep your website maintained and up to date with practical technical support, fixes, and ongoing improvements based on your needs.',
+    heroHeadline: 'Keep Your Website Working at Its Best.',
+    heroCopy:
+      'Keep your website maintained and up to date with practical technical support, fixes, and ongoing improvements based on your needs.',
+    heroCta: "LET'S DISCUSS MAINTENANCE",
+    platforms: ['Troubleshooting', 'Security Updates', 'Content Updates', 'Hosting Assistance'],
+    businessChallenge: [
+      {
+        title: 'Broken Layouts & Unaddressed Bugs',
+        description:
+          'Websites neglected after launch often suffer from broken contact forms, misaligned elements on new phone models, or expired links.'
+      },
+      {
+        title: 'Outdated Content & Pricing Information',
+        description:
+          'When updating copy, adding team members, or changing service prices is difficult, websites become stale and mislead potential clients.'
+      },
+      {
+        title: 'Plugin & Dependency Vulnerabilities',
+        description:
+          'Unmonitored third-party plugins and outdated software components can introduce security vulnerabilities, performance degradation, or sudden downtime.'
+      }
+    ],
+    ourApproach:
+      'Launching a website is only the first chapter; keeping it reliable, fast, and up to date is what protects your commercial reputation. I offer structured, dependable website maintenance and technical support for businesses that want direct developer access without hiring an in-house engineer. From routine content changes and plugin updates to troubleshooting unexpected errors, every support request is handled methodically with clear communication.',
+    approachSteps: [
+      {
+        title: 'Initial Health Check',
+        description: 'Reviewing your existing codebase, hosting configuration, forms, and dependencies to baseline health.'
+      },
+      {
+        title: 'Agreed Support Scope',
+        description: 'Defining clear expectations for update turnaround times, backup procedures, and routine tasks.'
+      },
+      {
+        title: 'Direct Developer Turnaround',
+        description: 'Communicating directly with the person working on your code for prompt, reliable resolutions.'
+      }
+    ],
+    capabilitiesAndDeliverables: [
+      {
+        title: 'Initial Website Review & Health Check',
+        description:
+          'Thorough inspection of existing links, forms, security certificates, and hosting performance.'
+      },
+      {
+        title: 'Agreed Content & Configuration Updates',
+        description:
+          'Timely updates to text copy, team bios, service pricing, contact details, and visual assets.'
+      },
+      {
+        title: 'Bug Fixes & Technical Troubleshooting',
+        description:
+          'Investigating and resolving layout glitches, broken scripts, form delivery issues, or responsive bugs.'
+      },
+      {
+        title: 'Dependency & Plugin Maintenance',
+        description:
+          'Applying verified updates to core platforms, packages, and plugins to ensure continuous stability.'
+      },
+      {
+        title: 'Backup & Recovery Procedures',
+        description:
+          'Verifying scheduled backups and setting up emergency rollback procedures where supported by hosting.'
+      },
+      {
+        title: 'Basic Security & SSL Monitoring',
+        description:
+          'Checking SSL certificate validity, domain renewal alerts, and scanning for unusual activity.'
+      },
+      {
+        title: 'Hosting & Deployment Assistance',
+        description:
+          'Technical support with DNS settings, domain transfers, server migrations, and CDN configuration.'
+      },
+      {
+        title: 'Transparent Maintenance Scope',
+        description:
+          'Clear boundaries and honest time allocations tailored to your monthly or on-demand support needs.'
+      }
+    ],
+    processStages: [
+      { step: '01', title: 'Onboarding Review', desc: 'Auditing your website setup, hosting credentials, and current pain points.' },
+      { step: '02', title: 'Scope Agreement', desc: 'Establishing clear parameters for routine updates, emergency fixes, and response times.' },
+      { step: '03', title: 'Baseline Tuning', desc: 'Resolving outstanding bugs, updating critical dependencies, and verifying backups.' },
+      { step: '04', title: 'Ongoing Support', desc: 'Executing content changes and troubleshooting requests as your business evolves.' },
+      { step: '05', title: 'Status Reviews', desc: 'Periodic check-ins to evaluate performance, security, and upcoming website needs.' }
+    ],
+    relevantProjects: ['bexley-lifescience'],
+    closingHeadline: 'Need Dependable Website Support?',
+    closingCopy:
+      "Tell me about your existing website and the kind of support you need. Let's establish a sensible, practical maintenance arrangement.",
+    closingCta: 'DISCUSS A SUPPORT PLAN',
+    metaTitle: 'Website Maintenance & Support — Charles Naveen | Freelance Web Developer',
+    metaDescription:
+      'Dependable website maintenance, technical troubleshooting, bug fixes, and ongoing content support from an independent web developer.'
   }
 ];
 
@@ -622,9 +1041,13 @@ export const projectEnquiryData = {
   projectTypes: [
     { value: 'website-development', label: '01 — Website Design & Development' },
     { value: 'landing-pages-redesign', label: '02 — Landing Pages & Website Redesign' },
-    { value: 'ecommerce', label: '03 — E-commerce Website Development' },
+    { value: 'ecommerce', label: '03 — E-commerce Development' },
     { value: 'mobile-app-development', label: '04 — Mobile App Development' },
-    { value: 'custom-integrations', label: '05 — Custom Features & AI Integrations' },
+    { value: 'custom-web-apps', label: '05 — Custom Web Applications' },
+    { value: 'ai-business-automation', label: '06 — AI & Business Automation' },
+    { value: 'seo-optimisation', label: '07 — SEO & Website Optimisation' },
+    { value: 'website-maintenance', label: '08 — Website Maintenance & Support' },
+    { value: 'custom-integrations', label: 'Custom Features & Integrations' },
     { value: 'business-corporate', label: 'Business & Corporate Website' },
     { value: 'agency-whitelabel', label: 'Agency Subcontracting' },
     { value: 'other-inquiry', label: 'Other / Custom Scope' }

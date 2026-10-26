@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -7,10 +7,14 @@ import {
   ExternalLink,
   Layers,
   Sparkles,
-  Info
+  Info,
+  Clock,
+  Compass,
+  AlertTriangle,
+  FolderKanban
 } from 'lucide-react';
 import { services, featuredProject, demoProjects } from '../data/projects';
-import { gsap, prefersReducedMotion } from '../utils/motion';
+import { gsap, ScrollTrigger, prefersReducedMotion } from '../utils/motion';
 
 export default function ServiceDetail({
   service,
@@ -19,65 +23,40 @@ export default function ServiceDetail({
   onSelectProject
 }) {
   const rootRef = useRef(null);
+  const [imageErrors, setImageErrors] = useState({});
 
   // Scroll to top when service changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setImageErrors({});
   }, [service.slug]);
 
-  // Entrance animations
+  // Entrance animations with safety checks
   useEffect(() => {
     if (prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
       gsap.from('.service-hero-content', {
-        y: 35,
-        opacity: 0,
-        duration: 0.75,
-        ease: 'power3.out'
-      });
-
-      gsap.from('.service-explanation-grid > *', {
-        scrollTrigger: {
-          trigger: '.service-explanation-section',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 30,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.65,
-        ease: 'power2.out'
-      });
-
-      gsap.from('.deliverable-card', {
-        scrollTrigger: {
-          trigger: '.service-deliverables-grid',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse'
-        },
         y: 25,
         opacity: 0,
-        stagger: 0.06,
-        duration: 0.55,
-        ease: 'power2.out'
-      });
-
-      gsap.from('.service-closing-box', {
-        scrollTrigger: {
-          trigger: '.service-closing-section',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 35,
-        opacity: 0,
-        duration: 0.75,
+        duration: 0.65,
         ease: 'power3.out'
       });
+
+      // Refresh ScrollTrigger to recalculate layout positions
+      if (typeof ScrollTrigger !== 'undefined') {
+        setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 150);
+      }
     }, rootRef);
 
     return () => ctx.revert();
   }, [service.slug]);
+
+  const handleImageError = (projectId) => {
+    setImageErrors((prev) => ({ ...prev, [projectId]: true }));
+  };
 
   // Find all projects matching service.relevantProjects
   const allProjects = [featuredProject, ...demoProjects];
@@ -116,7 +95,7 @@ export default function ServiceDetail({
             </button>
             <span className="page-meta-sep" aria-hidden="true">/</span>
             <span className="page-breadcrumb-text">SERVICE {service.number}</span>
-            <span className="page-meta-num">{service.number} / 05</span>
+            <span className="page-meta-num">{service.number} / 08</span>
           </div>
 
           <div className="page-header-title-box">
@@ -126,14 +105,14 @@ export default function ServiceDetail({
         </div>
       </div>
 
-      {/* 2. Section A: Hero Section */}
+      {/* 2. Section A: Service Introduction (Hero) */}
       <section className="service-hero-section" aria-label={`${service.title} Introduction`}>
         <div className="container">
           <div className="service-hero-content">
             <div className="service-hero-badge-strip">
-              <span className="service-num-badge">PRACTICE AREA {service.number}</span>
+              <span className="service-num-badge">SERVICE {service.number}</span>
               <span className="service-hero-dot" aria-hidden="true"></span>
-              <span className="service-hero-spec">CUSTOM ARCHITECTURE</span>
+              <span className="service-hero-spec">PRACTICE AREA</span>
             </div>
 
             <h2 className="service-hero-monument">
@@ -143,6 +122,20 @@ export default function ServiceDetail({
             <p className="service-hero-lead">
               {service.heroCopy}
             </p>
+
+            {/* Optional Technology / Platform References */}
+            {service.platforms && service.platforms.length > 0 && (
+              <div className="service-platform-pills" aria-label="Supported platforms and technologies">
+                <span className="platform-pills-label">CORE TECHNOLOGIES:</span>
+                <div className="platform-pills-list">
+                  {service.platforms.map((tech, idx) => (
+                    <span key={idx} className="platform-pill-item">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="service-hero-actions">
               <button
@@ -172,27 +165,55 @@ export default function ServiceDetail({
         </div>
       </section>
 
-      {/* 3. Section B: Service Explanation */}
-      <section className="service-explanation-section" aria-label="Service Details and Problem Solving">
+      {/* 3. Section B: The Business Challenge */}
+      {service.businessChallenge && service.businessChallenge.length > 0 && (
+        <section className="service-challenge-section" aria-label="The Business Challenge">
+          <div className="container">
+            <div className="service-section-header">
+              <span className="service-section-kicker">THE BUSINESS CHALLENGE</span>
+              <h3 className="service-section-title">PROBLEMS THIS SERVICE SOLVES</h3>
+              <p className="service-section-subtitle">
+                Common obstacles organizations face before bringing in focused technical engineering and structured development.
+              </p>
+            </div>
+
+            <div className="service-challenge-grid">
+              {service.businessChallenge.map((item, idx) => (
+                <div key={idx} className="service-problem-card">
+                  <div className="service-card-num">CHALLENGE 0{idx + 1}</div>
+                  <h4 className="service-card-title">{item.title}</h4>
+                  <p className="service-card-desc">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 4. Section C: Our Approach */}
+      <section className="service-approach-section" aria-label="Our Approach and Methodology">
         <div className="container">
           <div className="service-section-header">
-            <span className="service-section-kicker">PROBLEM SOLVING &amp; SUITABILITY</span>
-            <h3 className="service-section-title">WHY THIS SERVICE MATTERS</h3>
+            <span className="service-section-kicker">TAILORED EXECUTION</span>
+            <h3 className="service-section-title">OUR APPROACH &amp; STRATEGY</h3>
           </div>
 
           <div className="service-overview-block">
             <p className="service-overview-text">
-              {service.overview}
+              {service.ourApproach || service.overview}
             </p>
           </div>
 
-          {service.problemAndSuitability && service.problemAndSuitability.length > 0 && (
-            <div className="service-explanation-grid">
-              {service.problemAndSuitability.map((item, idx) => (
-                <div key={idx} className="service-problem-card">
-                  <div className="service-card-num">0{idx + 1}</div>
-                  <h4 className="service-card-title">{item.title}</h4>
-                  <p className="service-card-desc">{item.description}</p>
+          {service.approachSteps && service.approachSteps.length > 0 && (
+            <div className="service-approach-steps-grid">
+              {service.approachSteps.map((step, idx) => (
+                <div key={idx} className="approach-step-card">
+                  <div className="approach-step-header">
+                    <Compass size={18} className="approach-step-icon" aria-hidden="true" />
+                    <span className="approach-step-label">PILLAR 0{idx + 1}</span>
+                  </div>
+                  <h4 className="approach-step-title">{step.title}</h4>
+                  <p className="approach-step-desc">{step.description}</p>
                 </div>
               ))}
             </div>
@@ -200,14 +221,14 @@ export default function ServiceDetail({
         </div>
       </section>
 
-      {/* 4. Section C: Capabilities and Deliverables */}
-      <section id="capabilities" className="service-deliverables-section" aria-label="Capabilities and What is Included">
+      {/* 5. Section D: Capabilities & Deliverables */}
+      <section id="capabilities" className="service-deliverables-section" aria-label="Capabilities and Deliverables">
         <div className="container">
           <div className="service-section-header">
             <span className="service-section-kicker">WHAT IS INCLUDED</span>
             <h3 className="service-section-title">CAPABILITIES &amp; DELIVERABLES</h3>
             <p className="service-section-subtitle">
-              Every deliverable is engineered with precision, tailored to agreed project scope, and verified across real viewports before handover.
+              Specific, tangible items delivered as part of this service. Every deliverable is tested and verified before handover.
             </p>
           </div>
 
@@ -228,13 +249,38 @@ export default function ServiceDetail({
           <div className="service-scope-note">
             <Info size={16} className="scope-note-icon" aria-hidden="true" />
             <p className="scope-note-text">
-              <strong>Scope Notice:</strong> Deliverables and technical integrations are planned and confirmed during initial consultation. Exact feature sets, page counts, and third-party services are tailored to your business requirements.
+              <strong>Scope Notice:</strong> Exact deliverables and technical choices are confirmed during the initial project discovery. Features, page counts, and third-party integrations are tailored to your business requirements.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 5. Section D: Relevant Work */}
+      {/* 6. Section E: Project Process */}
+      {service.processStages && service.processStages.length > 0 && (
+        <section className="service-process-section" aria-label="Project Delivery Stages">
+          <div className="container">
+            <div className="service-section-header">
+              <span className="service-section-kicker">WORKING METHODOLOGY</span>
+              <h3 className="service-section-title">HOW THIS PROJECT WORKS</h3>
+              <p className="service-section-subtitle">
+                A predictable, transparent step-by-step path from initial requirements to delivery and ongoing support.
+              </p>
+            </div>
+
+            <div className="service-process-grid">
+              {service.processStages.map((st, idx) => (
+                <div key={idx} className="service-process-card">
+                  <span className="process-step-num">{st.step}</span>
+                  <h4 className="process-step-title">{st.title}</h4>
+                  <p className="process-step-desc">{st.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 7. Section F: Relevant Work & Demos */}
       <section className="service-work-section" aria-label="Relevant Portfolio Work and Demonstrations">
         <div className="container">
           <div className="service-section-header">
@@ -247,53 +293,68 @@ export default function ServiceDetail({
 
           {matchedProjects.length > 0 ? (
             <div className="service-projects-grid">
-              {matchedProjects.map((proj) => (
-                <div key={proj.id} className="service-project-card">
-                  <div className="service-project-media">
-                    <img
-                      src={proj.image}
-                      alt={proj.imageAlt || proj.title}
-                      className="service-project-img"
-                      loading="lazy"
-                    />
-                    <div className="service-project-badge-overlay">
-                      <span className={`service-status-pill ${proj.badgeClass || ''}`}>
-                        {proj.statusBadge}
-                      </span>
+              {matchedProjects.map((proj) => {
+                const isImgBroken = imageErrors[proj.id];
+                return (
+                  <div key={proj.id} className="service-project-card">
+                    <div className="service-project-media">
+                      {!isImgBroken && proj.image ? (
+                        <img
+                          src={proj.image}
+                          alt={proj.imageAlt || proj.title}
+                          className="service-project-img"
+                          loading="lazy"
+                          decoding="async"
+                          width="1200"
+                          height="750"
+                          onError={() => handleImageError(proj.id)}
+                        />
+                      ) : (
+                        <div className="project-image-fallback">
+                          <FolderKanban size={36} className="fallback-icon" aria-hidden="true" />
+                          <span className="fallback-title">{proj.title}</span>
+                          <span className="fallback-category">{proj.category}</span>
+                        </div>
+                      )}
+                      <div className="service-project-badge-overlay">
+                        <span className={`service-status-pill ${proj.badgeClass || ''}`}>
+                          {proj.statusBadge}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="service-project-info">
+                      <div className="service-project-category">{proj.category}</div>
+                      <h4 className="service-project-title">{proj.title}</h4>
+                      <p className="service-project-desc">{proj.tagline || proj.description}</p>
+
+                      <div className="service-project-actions">
+                        {proj.url && (
+                          <a
+                            href={proj.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-project-link-out"
+                          >
+                            <span>VISIT SITE / DEMO</span>
+                            <ExternalLink size={13} aria-hidden="true" />
+                          </a>
+                        )}
+                        {onSelectProject && (
+                          <button
+                            type="button"
+                            className="btn-project-details"
+                            onClick={() => onSelectProject(proj)}
+                          >
+                            <span>VIEW DETAILS</span>
+                            <ArrowUpRight size={13} aria-hidden="true" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="service-project-info">
-                    <div className="service-project-category">{proj.category}</div>
-                    <h4 className="service-project-title">{proj.title}</h4>
-                    <p className="service-project-desc">{proj.tagline || proj.description}</p>
-
-                    <div className="service-project-actions">
-                      {proj.url && (
-                        <a
-                          href={proj.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-project-link-out"
-                        >
-                          <span>VISIT SITE / DEMO</span>
-                          <ExternalLink size={13} aria-hidden="true" />
-                        </a>
-                      )}
-                      {onSelectProject && (
-                        <button
-                          type="button"
-                          className="btn-project-details"
-                          onClick={() => onSelectProject(proj)}
-                        >
-                          <span>VIEW DETAILS</span>
-                          <ArrowUpRight size={13} aria-hidden="true" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="service-honest-notice-card">
@@ -320,7 +381,7 @@ export default function ServiceDetail({
         </div>
       </section>
 
-      {/* 6. Section E: Closing CTA Banner */}
+      {/* 8. Section G: Closing CTA Banner */}
       <section className="service-closing-section" aria-label="Start a Project">
         <div className="container">
           <div className="service-closing-box">
@@ -349,7 +410,7 @@ export default function ServiceDetail({
         </div>
       </section>
 
-      {/* 7. Service Navigation Strip */}
+      {/* 9. Service Navigation Strip */}
       <section className="service-nav-strip" aria-label="Browse Other Services">
         <div className="container">
           <div className="service-nav-grid">
@@ -380,7 +441,7 @@ export default function ServiceDetail({
                 onNavigate('/services');
               }}
             >
-              <span>ALL SERVICES OVERVIEW (05)</span>
+              <span>ALL SERVICES OVERVIEW (08)</span>
             </a>
 
             {nextService ? (

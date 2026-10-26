@@ -209,12 +209,12 @@ export default function Hero({ onOpenContact, onNavigate }) {
                   <span className="preview-badge-dot" aria-hidden="true"></span>
                   <span>CORE DISCIPLINES &amp; OFFERINGS</span>
                 </div>
-                <span className="hero-preview-count">04 PRACTICE AREAS</span>
+                <span className="hero-preview-count">08 PRACTICE AREAS</span>
               </div>
 
               {/* Authentic Quick Services Index */}
               <div className="hero-services-list" role="list">
-                {services.map((s) => (
+                {services.slice(0, 4).map((s) => (
                   <a
                     key={s.number}
                     href={s.slug || "/services"}
@@ -267,7 +267,7 @@ export default function Hero({ onOpenContact, onNavigate }) {
                   className="pathway-link"
                   onClick={handleServicesClick}
                 >
-                  <span>5-Stage Process →</span>
+                  <span>All 8 Services &amp; Process →</span>
                 </a>
               </div>
             </div>
