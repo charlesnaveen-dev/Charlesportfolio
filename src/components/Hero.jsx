@@ -214,19 +214,22 @@ export default function Hero({ onOpenContact, onNavigate }) {
 
               {/* Authentic Quick Services Index */}
               <div className="hero-services-list" role="list">
-                {services.slice(0, 4).map((s) => (
+                {services.map((s) => (
                   <a
                     key={s.number}
-                    href="/services"
+                    href={s.slug || "/services"}
                     className="hero-service-item"
                     role="listitem"
-                    onClick={handleServicesClick}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate(s.slug || '/services');
+                    }}
                   >
                     <div className="hero-service-meta">
                       <span className="hero-service-num">{s.number}</span>
                       <span className="hero-service-title">{s.title}</span>
                     </div>
-                    <span className="hero-service-tag">{s.tag}</span>
+                    <span className="hero-service-tag">EXPLORE ↗</span>
                   </a>
                 ))}
               </div>

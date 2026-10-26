@@ -26,7 +26,7 @@ const COUNTRY_CODES = [
   { code: '+other', country: 'GL', label: 'Other' }
 ];
 
-export default function Contact({ defaultIntent = 'direct' }) {
+export default function Contact({ defaultIntent = 'direct', preselectedType = null }) {
   const rootRef = useRef(null);
   const [copied, setCopied] = useState(false);
 
@@ -95,7 +95,7 @@ export default function Contact({ defaultIntent = 'direct' }) {
     countryCode: '+91',
     phone: '',
     businessName: '',
-    projectType: defaultIntent === 'agency' ? 'agency-whitelabel' : 'business-corporate',
+    projectType: preselectedType || (defaultIntent === 'agency' ? 'agency-whitelabel' : 'website-development'),
     budget: 'flexible',
     projectDetails: '',
     _gotcha: ''
@@ -109,10 +109,12 @@ export default function Contact({ defaultIntent = 'direct' }) {
   const magneticSubmitBtnRef = useMagnetic(0.2);
 
   useEffect(() => {
-    if (defaultIntent === 'agency') {
+    if (preselectedType) {
+      setFormData((prev) => ({ ...prev, projectType: preselectedType }));
+    } else if (defaultIntent === 'agency') {
       setFormData((prev) => ({ ...prev, projectType: 'agency-whitelabel' }));
     }
-  }, [defaultIntent]);
+  }, [preselectedType, defaultIntent]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

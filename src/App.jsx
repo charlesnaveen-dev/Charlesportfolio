@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import Navbar from './components/Navbar';
 import PageHeader from './components/PageHeader';
 import Hero from './components/Hero';
 import Marquee from './components/Marquee';
 import Statement from './components/Statement';
 import Services from './components/Services';
+import ServiceDetail from './components/ServiceDetail';
 import ImpactComparison from './components/ImpactComparison';
 import ProjectGrid from './components/ProjectGrid';
 import Process from './components/Process';
@@ -15,6 +17,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ProjectModal from './components/ProjectModal';
 import CustomCursor from './components/CustomCursor';
+import { services } from './data/projects';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
 function getInitialRoute() {
@@ -23,9 +26,19 @@ function getInitialRoute() {
   const path = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
   const hash = window.location.hash.toLowerCase();
 
-  if (path === '/work' || hash === '#/work') return '/work';
-  if (path === '/services' || hash === '#/services') return '/services';
-  if (path === '/contact' || hash === '#/contact') return '/contact';
+  // Support hash routing fallback like #/services/website-development
+  if (hash.startsWith('#/')) {
+    const hashRoute = hash.slice(1).replace(/\/$/, '') || '/';
+    return hashRoute;
+  }
+
+  if (path === '/work') return '/work';
+  if (path === '/services') return '/services';
+  if (path === '/contact') return '/contact';
+
+  const matchedService = services.find((s) => s.slug === path);
+  if (matchedService) return matchedService.slug;
+
   return '/';
 }
 
@@ -58,6 +71,46 @@ export default function App() {
       window.removeEventListener('hashchange', handlePopState);
     };
   }, []);
+
+  // Synchronize document title, meta description, and canonical link
+  useEffect(() => {
+    const canonicalEl = document.querySelector('link[rel="canonical"]');
+    const metaDescEl = document.querySelector('meta[name="description"]');
+    const ogTitleEl = document.querySelector('meta[property="og:title"]');
+    const ogDescEl = document.querySelector('meta[property="og:description"]');
+    const ogUrlEl = document.querySelector('meta[property="og:url"]');
+
+    const service = services.find((s) => s.slug === currentRoute);
+
+    let title = 'Charles Naveen — Freelance Web Developer | Websites for Businesses & Agencies';
+    let description =
+      'Websites built to turn business attention into enquiries. Charles Naveen designs and develops modern, responsive websites for businesses and provides dependable development.';
+    let url = `https://charlesportfolio-self.vercel.app${currentRoute === '/' ? '' : currentRoute}`;
+
+    if (service) {
+      title = service.metaTitle;
+      description = service.metaDescription;
+    } else if (currentRoute === '/services') {
+      title = 'Services & Capabilities — Charles Naveen | Freelance Web Developer';
+      description =
+        'Explore web development services: business websites, landing pages, e-commerce stores, mobile applications, and custom feature integrations.';
+    } else if (currentRoute === '/work') {
+      title = 'Selected Work & Demonstrations — Charles Naveen | Freelance Web Developer';
+      description =
+        'A curated index of production client engineering and bespoke concept demonstrations. Engineered with custom React, modern typography, and responsive craftsmanship.';
+    } else if (currentRoute === '/contact') {
+      title = 'Contact & Start a Project — Charles Naveen | Freelance Web Developer';
+      description =
+        'Direct communication channels, interactive scope blueprint, and prompt developer turnaround for businesses.';
+    }
+
+    document.title = title;
+    if (metaDescEl) metaDescEl.setAttribute('content', description);
+    if (canonicalEl) canonicalEl.setAttribute('href', url);
+    if (ogTitleEl) ogTitleEl.setAttribute('content', title);
+    if (ogDescEl) ogDescEl.setAttribute('content', description);
+    if (ogUrlEl) ogUrlEl.setAttribute('content', url);
+  }, [currentRoute]);
 
   // Handle cross-page and intra-page navigation
   const navigateTo = (toRoute, targetHash = null) => {
@@ -118,12 +171,14 @@ export default function App() {
     navigateTo('/contact', '#contact');
   };
 
+  const activeService = services.find((s) => s.slug === currentRoute);
+
   return (
     <div className="portfolio-app-root">
       {/* Desktop Custom Magnetic Cursor */}
       <CustomCursor />
 
-      {/* Primary Fixed Header with 4 Navigation Links */}
+      {/* Primary Fixed Header with Navigation Links */}
       <Navbar
         currentRoute={currentRoute}
         onNavigate={navigateTo}
@@ -151,7 +206,10 @@ export default function App() {
             <Statement onOpenContact={() => handleStartProject('business')} />
 
             {/* Section 4: Capabilities & Core Offerings */}
-            <Services onSelectServiceForContact={(serviceId) => handleStartProject(serviceId)} />
+            <Services
+              onSelectServiceForContact={(serviceId) => handleStartProject(serviceId)}
+              onNavigate={navigateTo}
+            />
 
             {/* Section 5: Engineering Standards & Production Benchmarks */}
             <div id="impact">
@@ -177,7 +235,10 @@ export default function App() {
             <About />
 
             {/* Section 11: Closing Screen / Form */}
-            <Contact defaultIntent={contactIntent} />
+            <Contact
+              defaultIntent={contactIntent}
+              preselectedType={selectedProjectType}
+            />
           </div>
         )}
 
@@ -202,30 +263,70 @@ export default function App() {
         )}
 
         {/* =========================================================================
-            PAGE 3: SERVICES & PROCESS (Route: /services)
+            PAGE 3: SERVICES OVERVIEW (Route: /services)
             Dedicated services and methodology page
             ========================================================================= */}
         {currentRoute === '/services' && (
           <div className="page-view page-services">
             <PageHeader
-              breadcrumb="SERVICES & PROCESS"
+              breadcrumb="SERVICES & CAPABILITIES"
               pageNumber="03 / 04"
-              title="Practice Areas & Delivery Methodology"
-              description="Custom business websites, high-intent landing pages, performance re-engineering, and dependable white-label development for digital marketing agencies."
+              title="Practice Areas & Delivery Capabilities"
+              description="Custom business websites, high-intent landing pages, e-commerce stores, mobile applications, and custom feature integrations engineered with clean React craftsmanship."
               onBackToHome={() => navigateTo('/')}
             />
 
             <div id="services">
-              <Services onSelectServiceForContact={(serviceId) => handleStartProject(serviceId)} />
+              <Services
+                onSelectServiceForContact={(serviceId) => handleStartProject(serviceId)}
+                onNavigate={navigateTo}
+              />
             </div>
 
             <div id="process">
               <Process />
             </div>
 
-            <div id="collaboration">
-              <Collaboration onOpenContact={() => handleStartProject('agency')} />
+            <div className="services-overview-cta-strip">
+              <div className="container">
+                <div className="services-overview-cta-box">
+                  <div className="overview-cta-copy">
+                    <span className="closing-kicker">READY TO BEGIN?</span>
+                    <h3 className="overview-cta-title">HAVE A SPECIFIC PROJECT IN MIND?</h3>
+                    <p className="overview-cta-desc">
+                      Tell me what you're building, your goals, and what you need. Let's discuss the right approach, features, and next steps for your business.
+                    </p>
+                  </div>
+                  <div className="overview-cta-action">
+                    <button
+                      type="button"
+                      className="btn-closing-primary"
+                      onClick={() => handleStartProject('business')}
+                    >
+                      <span>START A PROJECT</span>
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            PAGES: DEDICATED SERVICE DETAIL PAGES
+            Routes: /services/website-development, /services/landing-pages-redesign,
+                    /services/ecommerce, /services/mobile-app-development,
+                    /services/custom-integrations
+            ========================================================================= */}
+        {activeService && (
+          <div className="page-view page-service-detail">
+            <ServiceDetail
+              service={activeService}
+              onNavigate={navigateTo}
+              onStartProject={handleStartProject}
+              onSelectProject={setActiveModalProject}
+            />
           </div>
         )}
 
@@ -238,8 +339,8 @@ export default function App() {
             <PageHeader
               breadcrumb="CONTACT & START A PROJECT"
               pageNumber="04 / 04"
-              title="Start a Project or Partner Up"
-              description="Direct communication channels, interactive scope blueprint, and prompt developer turnaround. Open to business builds and marketing agency subcontracting worldwide."
+              title="Start a Project or Send an Enquiry"
+              description="Direct communication channels, interactive scope blueprint, and prompt developer turnaround for modern business websites and custom development."
               onBackToHome={() => navigateTo('/')}
             />
 
@@ -251,7 +352,10 @@ export default function App() {
             </div>
 
             <div id="contact">
-              <Contact defaultIntent={contactIntent} />
+              <Contact
+                defaultIntent={contactIntent}
+                preselectedType={selectedProjectType}
+              />
             </div>
           </div>
         )}

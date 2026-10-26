@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowUpRight, CheckCircle2, HelpCircle } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { services } from '../data/projects';
 import { gsap, prefersReducedMotion } from '../utils/motion';
 
-export default function Services({ onSelectServiceForContact }) {
+export default function Services({ onSelectServiceForContact, onNavigate }) {
   const [activeServiceIndex, setActiveServiceIndex] = useState(0);
   const rootRef = useRef(null);
 
@@ -33,14 +33,22 @@ export default function Services({ onSelectServiceForContact }) {
         },
         y: 40,
         opacity: 0,
-        stagger: 0.1,
-        duration: 0.7,
+        stagger: 0.08,
+        duration: 0.6,
         ease: 'power3.out'
       });
     }, rootRef);
 
     return () => ctx.revert();
   }, []);
+
+  const handleRowClick = (slug) => {
+    if (onNavigate) {
+      onNavigate(slug);
+    } else {
+      window.location.pathname = slug;
+    }
+  };
 
   return (
     <section id="services" ref={rootRef} className="services-section" aria-label="Capabilities and Services">
@@ -49,8 +57,8 @@ export default function Services({ onSelectServiceForContact }) {
         <div className="section-header-wrap">
           <div className="section-pretitle">
             <span className="studio-tag">SERVICES &amp; SOLUTIONS</span>
-            <span style={{ color: 'var(--border-medium)' }}>/</span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+            <span style={{ color: 'var(--border-medium, #C2BEB5)' }}>/</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)', color: 'var(--text-muted-ivory)' }}>
               CORE OFFERINGS
             </span>
           </div>
@@ -59,7 +67,7 @@ export default function Services({ onSelectServiceForContact }) {
           </h2>
           <p className="section-lead">
             Straightforward web development services for business owners who need high-performing websites
-            and marketing agencies looking for a dependable subcontracting partner.
+            that build trust, communicate clearly, and generate genuine customer enquiries.
           </p>
         </div>
 
@@ -71,134 +79,42 @@ export default function Services({ onSelectServiceForContact }) {
               <div
                 key={item.number}
                 className={`capability-row ${isActive ? 'is-active' : ''}`}
-                onClick={() => setActiveServiceIndex(idx)}
+                onClick={() => handleRowClick(item.slug)}
                 onMouseEnter={() => setActiveServiceIndex(idx)}
+                onFocus={() => setActiveServiceIndex(idx)}
                 tabIndex={0}
                 role="listitem"
-                aria-expanded={isActive}
+                aria-label={`${item.number} — ${item.title}`}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    setActiveServiceIndex(idx);
+                    handleRowClick(item.slug);
                   }
                 }}
               >
                 <div className="capability-row-main">
                   <div className="capability-identity">
                     <span className="capability-num">{item.number}</span>
-                    <div>
+                    <div className="capability-title-desc-wrap">
                       <h3 className="capability-title">{item.title}</h3>
-                      {item.subtitle && (
-                        <p className="capability-subtitle" style={{
-                          fontSize: 'var(--text-xs)',
-                          color: 'var(--text-secondary)',
-                          marginTop: '0.2rem',
-                          fontFamily: 'var(--font-sans)'
-                        }}>
-                          {item.subtitle}
-                        </p>
-                      )}
+                      <p className="capability-short-desc">{item.shortDescription}</p>
                     </div>
                   </div>
 
-                  <div className="capability-tags-strip" aria-label={`${item.title} tag`}>
-                    <span className="capability-tag-pill">
-                      {item.tag}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Expanded Details Panel */}
-                <div className="capability-expand-drawer">
-                  <div className="capability-drawer-inner">
-                    <div className="capability-drawer-content">
-                      <p className="capability-drawer-desc">{item.description}</p>
-                      
-                      {item.whenAppropriate && (
-                        <div style={{
-                          margin: '0.75rem 0',
-                          padding: '0.65rem 0.85rem',
-                          backgroundColor: 'rgba(216, 243, 58, 0.05)',
-                          borderLeft: '2px solid var(--accent-primary)',
-                          borderRadius: '0 4px 4px 0'
-                        }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
-                            <HelpCircle size={13} style={{ color: 'var(--accent-primary)' }} />
-                            <span style={{
-                              fontFamily: 'var(--font-mono)',
-                              fontSize: '11px',
-                              letterSpacing: '0.05em',
-                              fontWeight: 700,
-                              color: 'var(--text-primary)',
-                              textTransform: 'uppercase'
-                            }}>
-                              WHEN THIS IS APPROPRIATE:
-                            </span>
-                          </div>
-                          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                            {item.whenAppropriate}
-                          </p>
-                        </div>
-                      )}
-
-                      <div className="capability-deliverables-group">
-                        <span className="capability-deliverables-title">WHAT YOU RECEIVE:</span>
-                        <div className="capability-deliverables-grid">
-                          {(item.whatYouReceive || item.deliverables).map((del, dIdx) => (
-                            <div key={dIdx} className="capability-deliverable-item">
-                              <CheckCircle2 size={14} className="capability-check-icon" aria-hidden="true" />
-                              <span>{del}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {item.demonstratedIn && (
-                        <div style={{
-                          marginTop: '1rem',
-                          padding: '0.5rem 0.75rem',
-                          backgroundColor: 'rgba(17, 18, 13, 0.05)',
-                          borderRadius: '4px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          flexWrap: 'wrap'
-                        }}>
-                          <span style={{
-                            fontFamily: 'var(--font-mono)',
-                            fontSize: '10px',
-                            fontWeight: 800,
-                            letterSpacing: '0.06em',
-                            color: 'var(--text-near-black)',
-                            textTransform: 'uppercase'
-                          }}>
-                            WORK REFERENCE:
-                          </span>
-                          <span style={{
-                            fontFamily: 'var(--font-mono)',
-                            fontSize: '11px',
-                            color: 'var(--text-near-black)',
-                            fontWeight: 600
-                          }}>
-                            {item.demonstratedIn}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="capability-drawer-action">
-                      <button
-                        type="button"
-                        className="btn-capability-enquire"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (onSelectServiceForContact) onSelectServiceForContact(item.id);
-                        }}
-                      >
-                        <span>DISCUSS THIS SERVICE</span>
-                        <ArrowUpRight size={14} aria-hidden="true" />
-                      </button>
-                    </div>
+                  <div className="capability-action-wrap">
+                    <a
+                      href={item.slug}
+                      className="btn-capability-learn-more"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRowClick(item.slug);
+                      }}
+                      aria-label={`Learn more about ${item.title}`}
+                    >
+                      <span>LEARN MORE</span>
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </a>
                   </div>
                 </div>
               </div>
