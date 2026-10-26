@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.enquiries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   name TEXT NOT NULL,
-  email TEXT NOT NULL,
+  email TEXT, -- Nullable to allow optional email in simplified enquiry form
   phone TEXT NOT NULL,
   business_name TEXT,
   project_type TEXT,
@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS public.enquiries (
   source TEXT DEFAULT 'portfolio-form',
   status TEXT NOT NULL DEFAULT 'new'
 );
+
+-- Ensure email column is nullable if table already exists
+ALTER TABLE public.enquiries ALTER COLUMN email DROP NOT NULL;
 
 -- 2. Create indexes for quick lookup & filtering in dashboard
 CREATE INDEX IF NOT EXISTS idx_enquiries_created_at ON public.enquiries(created_at DESC);

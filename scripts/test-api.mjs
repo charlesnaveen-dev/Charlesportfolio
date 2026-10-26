@@ -140,30 +140,40 @@ async function runTests() {
     console.assert(botRes.statusCode === 200 && botRes.data.success === true, 'Honeypot trap failed');
     console.log('✓ Honeypot Trap: Silent acceptance without triggering side-effects');
 
-    // Missing Name
+    // Missing Business Name
     const { req: badNameReq, res: badNameRes } = createMockReqRes({
       method: 'POST',
-      body: { name: '', email: 'alex@example.com', phone: '9876543210' }
+      body: { businessName: '', phone: '9876543210' }
     });
     await enquiryHandler(badNameReq, badNameRes);
-    console.assert(badNameRes.statusCode === 400, 'Bad name should return 400');
+    console.assert(badNameRes.statusCode === 400, 'Missing business name should return 400');
+    console.assert(badNameRes.data.error.includes('business name'), 'Error message should mention business name');
 
-    // Invalid Email
-    const { req: badEmailReq, res: badEmailRes } = createMockReqRes({
+    // Missing Phone Number
+    const { req: missingPhoneReq, res: missingPhoneRes } = createMockReqRes({
       method: 'POST',
-      body: { name: 'Alex Johnson', email: 'not-an-email', phone: '9876543210' }
+      body: { businessName: 'Acme Studio', phone: '' }
     });
-    await enquiryHandler(badEmailReq, badEmailRes);
-    console.assert(badEmailRes.statusCode === 400, 'Bad email should return 400');
+    await enquiryHandler(missingPhoneReq, missingPhoneRes);
+    console.assert(missingPhoneRes.statusCode === 400, 'Missing phone should return 400');
 
-    // Invalid Phone
+    // Invalid Phone Number (< 7 digits)
     const { req: badPhoneReq, res: badPhoneRes } = createMockReqRes({
       method: 'POST',
-      body: { name: 'Alex Johnson', email: 'alex@example.com', phone: '12' }
+      body: { businessName: 'Acme Studio', phone: '12' }
     });
     await enquiryHandler(badPhoneReq, badPhoneRes);
-    console.assert(badPhoneRes.statusCode === 400, 'Bad phone should return 400');
-    console.log('✓ Validation: Name, email, and phone validation confirmed\n');
+    console.assert(badPhoneRes.statusCode === 400, 'Invalid phone should return 400');
+
+    // Invalid Email format (when email is provided)
+    const { req: badEmailReq, res: badEmailRes } = createMockReqRes({
+      method: 'POST',
+      body: { businessName: 'Acme Studio', phone: '9876543210', email: 'not-an-email' }
+    });
+    await enquiryHandler(badEmailReq, badEmailRes);
+    console.assert(badEmailRes.statusCode === 400, 'Invalid email should return 400');
+
+    console.log('✓ Validation: Business name (required), phone (required), and email (optional/validated) confirmed\n');
   }
 
   // --- UNIT 6: Missing Supabase Service Role Key Protection ---
@@ -199,8 +209,59 @@ async function runTests() {
     console.log('✓ Missing Key State: Diagnostics accurately identify missing key without throwing\n');
   }
 
+  // --- UNIT 8: Payload Verification for Simplified Form ---
+  {
+    console.log('[TEST GROUP 8] Submission Payload Scenarios Verification');
+
+    // Scenario 1: Business name and phone number only
+    const { req: p1Req, res: p1Res } = createMockReqRes({
+      method: 'POST',
+      body: { businessName: 'Apex Solutions', phone: '+91 93849 59626' }
+    });
+    // Triggers missing db key 503, which proves it passed all input validations!
+    await enquiryHandler(p1Req, p1Res);
+    console.assert(p1Res.statusCode === 503, 'Valid submission with business name & phone only must pass validation');
+    console.log('✓ Scenario 1: Valid submission with business name and phone only accepted');
+
+    // Scenario 2: Business name, phone, and valid email
+    const { req: p2Req, res: p2Res } = createMockReqRes({
+      method: 'POST',
+      body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'contact@apex.com' }
+    });
+    await enquiryHandler(p2Req, p2Res);
+    console.assert(p2Res.statusCode === 503, 'Valid submission with email must pass validation');
+    console.log('✓ Scenario 2: Valid submission with business name, phone, and optional email accepted');
+
+    // Scenario 3: Missing business name rejected
+    const { req: p3Req, res: p3Res } = createMockReqRes({
+      method: 'POST',
+      body: { businessName: '', phone: '+91 93849 59626' }
+    });
+    await enquiryHandler(p3Req, p3Res);
+    console.assert(p3Res.statusCode === 400, 'Missing business name rejected');
+    console.log('✓ Scenario 3: Missing business name rejected with 400');
+
+    // Scenario 4: Missing phone number rejected
+    const { req: p4Req, res: p4Res } = createMockReqRes({
+      method: 'POST',
+      body: { businessName: 'Apex Solutions', phone: '' }
+    });
+    await enquiryHandler(p4Req, p4Res);
+    console.assert(p4Res.statusCode === 400, 'Missing phone number rejected');
+    console.log('✓ Scenario 4: Missing phone number rejected with 400');
+
+    // Scenario 5: Invalid email format rejected
+    const { req: p5Req, res: p5Res } = createMockReqRes({
+      method: 'POST',
+      body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'invalid-email' }
+    });
+    await enquiryHandler(p5Req, p5Res);
+    console.assert(p5Res.statusCode === 400, 'Invalid email rejected');
+    console.log('✓ Scenario 5: Invalid email format rejected with 400\n');
+  }
+
   console.log('====================================================');
-  console.log('     ALL 7 TEST GROUPS PASSED WITH ZERO ERRORS      ');
+  console.log('     ALL TEST GROUPS PASSED WITH ZERO ERRORS        ');
   console.log('====================================================\n');
 }
 

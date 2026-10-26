@@ -1,10 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ArrowUpRight,
-  MessageSquare,
-  Mail,
-  Copy,
-  Check,
   CheckCircle2,
   AlertCircle,
   Building2,
@@ -13,7 +8,6 @@ import {
   Loader2
 } from 'lucide-react';
 import { projectEnquiryData } from '../data/projects';
-import { contactConfig } from '../data/contactConfig';
 import { useMagnetic } from '../hooks/useMagnetic';
 import { gsap, prefersReducedMotion } from '../utils/motion';
 
@@ -31,35 +25,22 @@ const COUNTRY_CODES = [
   { code: '+other', country: 'GL', label: 'Other' }
 ];
 
-export default function StartProject({ preselectedType = null, defaultIntent = 'business' }) {
+export default function StartProject() {
   const rootRef = useRef(null);
   const magneticSubmitBtnRef = useMagnetic(0.2);
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    businessName: '',
     countryCode: '+91',
     phone: '',
-    businessName: '',
-    projectType: preselectedType || (defaultIntent === 'agency' ? 'agency-whitelabel' : 'business-corporate'),
-    budget: 'flexible',
-    projectDetails: '',
+    email: '',
     _gotcha: ''
   });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const [submittedData, setSubmittedData] = useState(null);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (preselectedType) {
-      setFormData((prev) => ({ ...prev, projectType: preselectedType }));
-    } else if (defaultIntent === 'agency') {
-      setFormData((prev) => ({ ...prev, projectType: 'agency-whitelabel' }));
-    }
-  }, [preselectedType, defaultIntent]);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -122,24 +103,25 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
 
   const validate = () => {
     const errs = {};
-    if (!formData.name.trim()) {
-      errs.name = 'Please enter your name.';
-    } else if (formData.name.trim().length < 2) {
-      errs.name = 'Name must be at least 2 characters.';
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      errs.email = 'Please enter your email address.';
-    } else if (!emailRegex.test(formData.email.trim())) {
-      errs.email = 'Please enter a valid email address.';
+    if (!formData.businessName.trim()) {
+      errs.businessName = 'Please enter your business name.';
+    } else if (formData.businessName.trim().length < 2) {
+      errs.businessName = 'Business name must be at least 2 characters.';
     }
 
     const cleanPhone = formData.phone.replace(/[\s\-()]/g, '');
     if (!cleanPhone) {
-      errs.phone = 'Please enter your mobile or WhatsApp number.';
+      errs.phone = 'Please enter your phone number.';
     } else if (!/^\+?[0-9]{7,15}$/.test(cleanPhone)) {
-      errs.phone = 'Please enter a valid mobile number (7–15 digits).';
+      errs.phone = 'Please enter a valid phone number (7–15 digits).';
+    }
+
+    const emailTrimmed = formData.email.trim();
+    if (emailTrimmed) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailTrimmed)) {
+        errs.email = 'Please enter a valid email address.';
+      }
     }
 
     return errs;
@@ -147,6 +129,8 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -156,10 +140,11 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
     setIsSubmitting(true);
     setSubmitError(null);
 
+    const rawPhone = formData.phone.trim();
     const fullPhone =
-      formData.countryCode === '+other'
-        ? formData.phone.trim()
-        : `${formData.countryCode} ${formData.phone.trim()}`;
+      formData.countryCode === '+other' || rawPhone.startsWith('+')
+        ? rawPhone
+        : `${formData.countryCode} ${rawPhone}`;
 
     try {
       const response = await fetch('/api/enquiry', {
@@ -168,13 +153,10 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: fullPhone,
           businessName: formData.businessName.trim(),
-          projectType: formData.projectType,
-          budget: formData.budget,
-          message: formData.projectDetails.trim(),
+          name: formData.businessName.trim(),
+          phone: fullPhone,
+          email: formData.email.trim() || undefined,
           source: 'start-project-section',
           _gotcha: formData._gotcha
         })
@@ -183,95 +165,18 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || 'Failed to submit enquiry. Please try again.');
+        throw new Error(result.error || 'Failed to submit enquiry.');
       }
 
-      setSubmittedData({
-        ...formData,
-        fullPhone
-      });
+      setIsSubmitted(true);
     } catch (err) {
       console.error('[SUBMISSION_ERROR]', err);
       setSubmitError(
-        err.message || 'Unable to submit enquiry right now. Please try again or reach out directly.'
+        'Unable to submit enquiry right now. Please try again or reach out directly.'
       );
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleReset = () => {
-    setSubmittedData(null);
-    setFormData({
-      name: '',
-      email: '',
-      countryCode: '+91',
-      phone: '',
-      businessName: '',
-      projectType: preselectedType || (defaultIntent === 'agency' ? 'agency-whitelabel' : 'business-corporate'),
-      budget: 'flexible',
-      projectDetails: '',
-      _gotcha: ''
-    });
-    setErrors({});
-    setSubmitError(null);
-    setCopied(false);
-  };
-
-  const getFullPhone = () => {
-    if (!submittedData) return '';
-    return submittedData.fullPhone || submittedData.phone;
-  };
-
-  const getEnquirySummaryText = () => {
-    if (!submittedData) return '';
-    const details = submittedData.projectDetails.trim()
-      ? submittedData.projectDetails.trim()
-      : 'Interested in discussing a website design / development project.';
-
-    return (
-      `Project Enquiry for Charles Naveen\n` +
-      `===================================\n` +
-      `• Name: ${submittedData.name.trim()}\n` +
-      `• Email: ${submittedData.email.trim()}\n` +
-      `• Mobile / WhatsApp: ${getFullPhone()}\n` +
-      (submittedData.businessName ? `• Business: ${submittedData.businessName.trim()}\n` : '') +
-      `• Type: ${submittedData.projectType}\n` +
-      `• Budget: ${submittedData.budget}\n` +
-      `• Project Details:\n${details}\n\n` +
-      `Sent via Charles Naveen Portfolio`
-    );
-  };
-
-  const handleCopyText = () => {
-    const text = getEnquirySummaryText();
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
-  };
-
-  const generateWhatsAppUrl = () => {
-    if (!submittedData) return `https://wa.me/${contactConfig.whatsappPlaceholder}`;
-    const details = submittedData.projectDetails.trim()
-      ? submittedData.projectDetails.trim()
-      : 'I would like to discuss a website development project.';
-
-    const message =
-      `Hi Charles, I am submitting an enquiry from your portfolio:\n\n` +
-      `• Name: ${submittedData.name.trim()}\n` +
-      `• Email: ${submittedData.email.trim()}\n` +
-      `• Mobile / WhatsApp: ${getFullPhone()}\n` +
-      (submittedData.businessName ? `• Business: ${submittedData.businessName.trim()}\n` : '') +
-      `• Details: ${details}`;
-
-    return `https://wa.me/${contactConfig.whatsappPlaceholder}?text=${encodeURIComponent(message)}`;
-  };
-
-  const generateMailtoUrl = () => {
-    if (!submittedData) return `mailto:${contactConfig.emailPlaceholder}`;
-    const subject = encodeURIComponent(`Project Enquiry from ${submittedData.name.trim()}`);
-    const body = encodeURIComponent(getEnquirySummaryText());
-    return `mailto:${contactConfig.emailPlaceholder}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -348,62 +253,15 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
             </span>
           </div>
 
-          {submittedData ? (
-            <div className="form-success-box" role="status" aria-live="polite">
-              <div className="success-icon-wrap">
-                <CheckCircle2 size={40} className="success-check-icon" aria-hidden="true" />
+          {isSubmitted ? (
+            <div className="enquiry-success-state" role="status" aria-live="polite">
+              <div className="enquiry-success-icon-wrap">
+                <CheckCircle2 size={36} aria-hidden="true" />
               </div>
-              <h3 className="success-heading">Enquiry Successfully Recorded</h3>
-              <p className="success-subtext">
-                Thank you, <strong>{submittedData.name}</strong>. Your enquiry details have been securely stored in
-                the database and an email notification has been prepared. Choose your direct contact route below for immediate discussion:
+              <h3 className="enquiry-success-title">Enquiry Submitted Successfully!</h3>
+              <p className="enquiry-success-text">
+                Thank you for reaching out. Your enquiry has been received, and I'll contact you soon.
               </p>
-
-              <div className="brief-preview-box">
-                <pre className="brief-preview-pre">{getEnquirySummaryText()}</pre>
-              </div>
-
-              <div className="success-action-buttons">
-                <a
-                  href={generateWhatsAppUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-success-primary"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <MessageSquare size={16} aria-hidden="true" />
-                  <span>CONTINUE TO WHATSAPP ↗</span>
-                </a>
-
-                <a
-                  href={generateMailtoUrl()}
-                  className="btn-success-secondary"
-                  style={{ textDecoration: 'none' }}
-                >
-                  <Mail size={16} aria-hidden="true" />
-                  <span>SEND VIA EMAIL ({contactConfig.emailPlaceholder})</span>
-                </a>
-
-                <button
-                  type="button"
-                  onClick={handleCopyText}
-                  className="btn-success-secondary"
-                  style={{ border: '1.5px dashed var(--border-medium)' }}
-                >
-                  {copied ? <Check size={16} color="#D8F33A" /> : <Copy size={16} aria-hidden="true" />}
-                  <span>{copied ? 'COPIED TO CLIPBOARD' : 'COPY ENQUIRY TEXT'}</span>
-                </button>
-              </div>
-
-              <div className="success-reset-row" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="btn-reset-form"
-                >
-                  Edit or Submit Another Enquiry ↺
-                </button>
-              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="enquiry-form-body">
@@ -419,169 +277,98 @@ export default function StartProject({ preselectedType = null, defaultIntent = '
                 aria-hidden="true"
               />
 
-              {/* Row 1: Name & Email */}
-              <div className="form-fields-row">
-                <div className="form-group">
-                  <label htmlFor="enquiry-name" className="input-label">
-                    Name <span className="req-star">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="enquiry-name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Your full name"
-                    className="editorial-input"
-                    aria-required="true"
-                    aria-invalid={!!errors.name}
-                    autoComplete="name"
-                  />
-                  {errors.name && (
-                    <span className="error-note" role="alert">
-                      {errors.name}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="enquiry-email" className="input-label">
-                    Email Address <span className="req-star">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="enquiry-email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="you@company.com"
-                    className="editorial-input"
-                    aria-required="true"
-                    aria-invalid={!!errors.email}
-                    autoComplete="email"
-                  />
-                  {errors.email && (
-                    <span className="error-note" role="alert">
-                      {errors.email}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Row 2: Mobile / WhatsApp & Business Name */}
-              <div className="form-fields-row">
-                <div className="form-group">
-                  <label htmlFor="enquiry-phone" className="input-label">
-                    Mobile Number / WhatsApp <span className="req-star">*</span>
-                  </label>
-                  <div className="phone-input-row">
-                    <select
-                      id="enquiry-country-code"
-                      name="countryCode"
-                      value={formData.countryCode}
-                      onChange={handleChange}
-                      className="editorial-select phone-code-select"
-                      aria-label="Country Code"
-                    >
-                      {COUNTRY_CODES.map((item) => (
-                        <option key={item.code} value={item.code}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </select>
-                    <div style={{ flex: 1 }}>
-                      <input
-                        type="tel"
-                        id="enquiry-phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        placeholder="93849 59626"
-                        className="editorial-input"
-                        aria-required="true"
-                        aria-invalid={!!errors.phone}
-                        autoComplete="tel-national"
-                      />
-                    </div>
-                  </div>
-                  {errors.phone && (
-                    <span className="error-note" role="alert">
-                      {errors.phone}
-                    </span>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="enquiry-business" className="input-label">
-                    Business / Brand Name <span className="opt-tag">(Optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="enquiry-business"
-                    name="businessName"
-                    value={formData.businessName}
-                    onChange={handleChange}
-                    placeholder="Company, Clinic, or Agency"
-                    className="editorial-input"
-                  />
-                </div>
-              </div>
-
-              {/* Row 3: Requirement Type & Estimated Budget */}
-              <div className="form-fields-row">
-                <div className="form-group">
-                  <label htmlFor="enquiry-project-type" className="input-label">
-                    Requirement Type
-                  </label>
-                  <select
-                    id="enquiry-project-type"
-                    name="projectType"
-                    value={formData.projectType}
-                    onChange={handleChange}
-                    className="editorial-select"
-                  >
-                    {projectEnquiryData.projectTypes.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="enquiry-budget" className="input-label">
-                    Estimated Budget
-                  </label>
-                  <select
-                    id="enquiry-budget"
-                    name="budget"
-                    value={formData.budget}
-                    onChange={handleChange}
-                    className="editorial-select"
-                  >
-                    {projectEnquiryData.budgets.map((tier) => (
-                      <option key={tier.value} value={tier.value}>
-                        {tier.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Field 4: Project Details (Optional) */}
+              {/* 1. Business Name — Required */}
               <div className="form-group">
-                <label htmlFor="enquiry-details" className="input-label">
-                  Project Details <span className="opt-tag">(Optional)</span>
+                <label htmlFor="enquiry-business" className="input-label">
+                  Business Name <span className="req-star">*</span>
                 </label>
-                <textarea
-                  id="enquiry-details"
-                  name="projectDetails"
-                  value={formData.projectDetails}
+                <input
+                  type="text"
+                  id="enquiry-business"
+                  name="businessName"
+                  value={formData.businessName}
                   onChange={handleChange}
-                  placeholder="Briefly tell me what you need (e.g., goals, page requirements, reference sites, timeline)."
-                  rows={4}
-                  className="editorial-textarea"
-                ></textarea>
+                  placeholder="Company, Brand, or Clinic"
+                  className="editorial-input"
+                  aria-required="true"
+                  aria-invalid={!!errors.businessName}
+                  autoComplete="organization"
+                  disabled={isSubmitting}
+                />
+                {errors.businessName && (
+                  <span className="error-note" role="alert">
+                    {errors.businessName}
+                  </span>
+                )}
+              </div>
+
+              {/* 2. Phone Number — Required */}
+              <div className="form-group">
+                <label htmlFor="enquiry-phone" className="input-label">
+                  Phone Number <span className="req-star">*</span>
+                </label>
+                <div className="phone-input-row">
+                  <select
+                    id="enquiry-country-code"
+                    name="countryCode"
+                    value={formData.countryCode}
+                    onChange={handleChange}
+                    className="editorial-select phone-code-select"
+                    aria-label="Country Code"
+                    disabled={isSubmitting}
+                  >
+                    {COUNTRY_CODES.map((item) => (
+                      <option key={item.code} value={item.code}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="tel"
+                      id="enquiry-phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="93849 59626"
+                      className="editorial-input"
+                      aria-required="true"
+                      aria-invalid={!!errors.phone}
+                      autoComplete="tel-national"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                </div>
+                {errors.phone && (
+                  <span className="error-note" role="alert">
+                    {errors.phone}
+                  </span>
+                )}
+              </div>
+
+              {/* 3. Email Address — Optional */}
+              <div className="form-group">
+                <label htmlFor="enquiry-email" className="input-label">
+                  Email Address <span className="opt-tag">(Optional)</span>
+                </label>
+                <input
+                  type="email"
+                  id="enquiry-email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@company.com"
+                  className="editorial-input"
+                  aria-required="false"
+                  aria-invalid={!!errors.email}
+                  autoComplete="email"
+                  disabled={isSubmitting}
+                />
+                {errors.email && (
+                  <span className="error-note" role="alert">
+                    {errors.email}
+                  </span>
+                )}
               </div>
 
               {/* Submission Error Banner */}

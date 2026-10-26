@@ -4,13 +4,10 @@ import {
   Mail,
   MessageSquare,
   CheckCircle2,
-  Copy,
-  Check,
   AlertCircle,
   Loader2
 } from 'lucide-react';
 import { contactConfig } from '../data/contactConfig';
-import { projectEnquiryData } from '../data/projects';
 import { useMagnetic } from '../hooks/useMagnetic';
 import { gsap, prefersReducedMotion } from '../utils/motion';
 
@@ -26,7 +23,7 @@ const COUNTRY_CODES = [
   { code: '+other', country: 'GL', label: 'Other' }
 ];
 
-export default function Contact({ defaultIntent = 'direct', preselectedType = null }) {
+export default function Contact() {
   const rootRef = useRef(null);
   const [copied, setCopied] = useState(false);
 
@@ -90,31 +87,19 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
   }, []);
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    businessName: '',
     countryCode: '+91',
     phone: '',
-    businessName: '',
-    projectType: preselectedType || (defaultIntent === 'agency' ? 'agency-whitelabel' : 'website-development'),
-    budget: 'flexible',
-    projectDetails: '',
+    email: '',
     _gotcha: ''
   });
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const [submittedData, setSubmittedData] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const magneticSubmitBtnRef = useMagnetic(0.2);
-
-  useEffect(() => {
-    if (preselectedType) {
-      setFormData((prev) => ({ ...prev, projectType: preselectedType }));
-    } else if (defaultIntent === 'agency') {
-      setFormData((prev) => ({ ...prev, projectType: 'agency-whitelabel' }));
-    }
-  }, [preselectedType, defaultIntent]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -129,24 +114,25 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
 
   const validate = () => {
     const errs = {};
-    if (!formData.name.trim()) {
-      errs.name = 'Please enter your name.';
-    } else if (formData.name.trim().length < 2) {
-      errs.name = 'Name must be at least 2 characters.';
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      errs.email = 'Please enter your email address.';
-    } else if (!emailRegex.test(formData.email.trim())) {
-      errs.email = 'Please enter a valid email address.';
+    if (!formData.businessName.trim()) {
+      errs.businessName = 'Please enter your business name.';
+    } else if (formData.businessName.trim().length < 2) {
+      errs.businessName = 'Business name must be at least 2 characters.';
     }
 
     const cleanPhone = formData.phone.replace(/[\s\-()]/g, '');
     if (!cleanPhone) {
-      errs.phone = 'Please enter your mobile or WhatsApp number.';
+      errs.phone = 'Please enter your phone number.';
     } else if (!/^\+?[0-9]{7,15}$/.test(cleanPhone)) {
-      errs.phone = 'Please enter a valid mobile number (7–15 digits).';
+      errs.phone = 'Please enter a valid phone number (7–15 digits).';
+    }
+
+    const emailTrimmed = formData.email.trim();
+    if (emailTrimmed) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailTrimmed)) {
+        errs.email = 'Please enter a valid email address.';
+      }
     }
 
     return errs;
@@ -154,6 +140,8 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -163,10 +151,11 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
     setIsSubmitting(true);
     setSubmitError(null);
 
+    const rawPhone = formData.phone.trim();
     const fullPhone =
-      formData.countryCode === '+other'
-        ? formData.phone.trim()
-        : `${formData.countryCode} ${formData.phone.trim()}`;
+      formData.countryCode === '+other' || rawPhone.startsWith('+')
+        ? rawPhone
+        : `${formData.countryCode} ${rawPhone}`;
 
     try {
       const response = await fetch('/api/enquiry', {
@@ -175,13 +164,10 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: fullPhone,
           businessName: formData.businessName.trim(),
-          projectType: formData.projectType,
-          budget: formData.budget,
-          message: formData.projectDetails.trim(),
+          name: formData.businessName.trim(),
+          phone: fullPhone,
+          email: formData.email.trim() || undefined,
           source: 'contact-section',
           _gotcha: formData._gotcha
         })
@@ -190,94 +176,18 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || 'Failed to submit enquiry. Please try again.');
+        throw new Error(result.error || 'Failed to submit enquiry.');
       }
 
-      setSubmittedData({
-        ...formData,
-        fullPhone
-      });
+      setIsSubmitted(true);
     } catch (err) {
       console.error('[SUBMISSION_ERROR]', err);
       setSubmitError(
-        err.message || 'Unable to submit enquiry right now. Please try again or message me directly.'
+        'Unable to submit enquiry right now. Please try again or reach out directly.'
       );
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleReset = () => {
-    setSubmittedData(null);
-    setFormData({
-      name: '',
-      email: '',
-      countryCode: '+91',
-      phone: '',
-      businessName: '',
-      projectType: defaultIntent === 'agency' ? 'agency-whitelabel' : 'business-corporate',
-      budget: 'flexible',
-      projectDetails: '',
-      _gotcha: ''
-    });
-    setErrors({});
-    setSubmitError(null);
-    setCopied(false);
-  };
-
-  const getFullPhone = () => {
-    if (!submittedData) return '';
-    return submittedData.fullPhone || submittedData.phone;
-  };
-
-  const getBriefSummaryText = () => {
-    if (!submittedData) return '';
-    const details = submittedData.projectDetails.trim()
-      ? submittedData.projectDetails.trim()
-      : 'Interested in discussing a website development project.';
-
-    return (
-      `Project Enquiry for Charles Naveen\n` +
-      `----------------------------------\n` +
-      `From: ${submittedData.name.trim()}\n` +
-      `Email: ${submittedData.email.trim()}\n` +
-      `Mobile / WhatsApp: ${getFullPhone()}\n` +
-      (submittedData.businessName ? `Business: ${submittedData.businessName.trim()}\n` : '') +
-      `Type: ${submittedData.projectType}\n` +
-      `Budget: ${submittedData.budget}\n` +
-      `Details:\n${details}`
-    );
-  };
-
-  const handleCopyBrief = () => {
-    const text = getBriefSummaryText();
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
-  };
-
-  const generateMailtoLink = () => {
-    if (!submittedData) return `mailto:${contactConfig.emailPlaceholder}`;
-    const subject = encodeURIComponent(`Project Enquiry from ${submittedData.name.trim()}`);
-    const body = encodeURIComponent(getBriefSummaryText());
-    return `mailto:${contactConfig.emailPlaceholder}?subject=${subject}&body=${body}`;
-  };
-
-  const generateWhatsAppLink = () => {
-    if (!submittedData) return `https://wa.me/${contactConfig.whatsappPlaceholder}`;
-    const details = submittedData.projectDetails.trim()
-      ? submittedData.projectDetails.trim()
-      : 'Looking to discuss a website project.';
-
-    const text =
-      `Hi Charles, I am submitting an enquiry from your portfolio:\n\n` +
-      `• Name: ${submittedData.name.trim()}\n` +
-      `• Email: ${submittedData.email.trim()}\n` +
-      `• Mobile / WhatsApp: ${getFullPhone()}\n` +
-      (submittedData.businessName ? `• Business: ${submittedData.businessName.trim()}\n` : '') +
-      `• Details: ${details}`;
-
-    return `https://wa.me/${contactConfig.whatsappPlaceholder}?text=${encodeURIComponent(text)}`;
   };
 
   return (
@@ -383,57 +293,15 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
                 </p>
               </div>
 
-              {submittedData ? (
-                <div className="form-success-box" role="status" aria-live="polite">
-                  <div className="success-icon-wrap">
-                    <CheckCircle2 size={36} color="#D8F33A" />
+              {isSubmitted ? (
+                <div className="enquiry-success-state" role="status" aria-live="polite">
+                  <div className="enquiry-success-icon-wrap">
+                    <CheckCircle2 size={36} aria-hidden="true" />
                   </div>
-                  <h3 className="success-heading" style={{ fontSize: '1.5rem', margin: '0.25rem 0' }}>
-                    Enquiry Successfully Recorded
-                  </h3>
-                  <p className="success-subtext">
-                    Thank you, <strong>{submittedData.name}</strong>. Your enquiry details have been securely stored in
-                    the database and an email notification has been prepared. Choose a direct route below if you need
-                    immediate same-day discussion:
+                  <h3 className="enquiry-success-title">Enquiry Submitted Successfully!</h3>
+                  <p className="enquiry-success-text">
+                    Thank you for reaching out. Your enquiry has been received, and I'll contact you soon.
                   </p>
-
-                  <div className="success-action-buttons">
-                    <a
-                      href={generateWhatsAppLink()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-success-primary"
-                    >
-                      <MessageSquare size={16} aria-hidden="true" />
-                      <span>CONTINUE TO WHATSAPP ↗</span>
-                    </a>
-                    <a
-                      href={generateMailtoLink()}
-                      className="btn-success-secondary"
-                    >
-                      <Mail size={16} aria-hidden="true" />
-                      <span>DISPATCH VIA EMAIL</span>
-                    </a>
-                    <button
-                      type="button"
-                      onClick={handleCopyBrief}
-                      className="btn-success-secondary"
-                      style={{ border: '1px dashed var(--border-medium)' }}
-                    >
-                      {copied ? <Check size={16} color="#D8F33A" /> : <Copy size={16} aria-hidden="true" />}
-                      <span>{copied ? 'COPIED TO CLIPBOARD' : 'COPY ENQUIRY TEXT'}</span>
-                    </button>
-                  </div>
-
-                  <div className="success-reset-row">
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      className="btn-reset-form"
-                    >
-                      Edit or Submit Another Inquiry ↺
-                    </button>
-                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="contact-form-element">
@@ -449,163 +317,92 @@ export default function Contact({ defaultIntent = 'direct', preselectedType = nu
                     aria-hidden="true"
                   />
 
-                  {/* Row 1: Name & Email */}
-                  <div className="form-fields-row">
-                    <div className="form-group">
-                      <label htmlFor="contact-name" className="input-label">
-                        Name <span className="req-star">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="contact-name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Your full name"
-                        className="dark-studio-input"
-                        aria-required="true"
-                        aria-invalid={!!errors.name}
-                        autoComplete="name"
-                      />
-                      {errors.name && <span className="error-note" role="alert">{errors.name}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="contact-email" className="input-label">
-                        Email Address <span className="req-star">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="contact-email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="you@company.com"
-                        className="dark-studio-input"
-                        aria-required="true"
-                        aria-invalid={!!errors.email}
-                        autoComplete="email"
-                      />
-                      {errors.email && <span className="error-note" role="alert">{errors.email}</span>}
-                    </div>
-                  </div>
-
-                  {/* Row 2: Mobile / WhatsApp & Business Name */}
-                  <div className="form-fields-row">
-                    <div className="form-group">
-                      <label htmlFor="contact-phone" className="input-label">
-                        Mobile Number / WhatsApp <span className="req-star">*</span>
-                      </label>
-                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                        <select
-                          name="countryCode"
-                          value={formData.countryCode}
-                          onChange={handleChange}
-                          className="dark-studio-select"
-                          style={{
-                            width: 'auto',
-                            minWidth: '105px',
-                            flexShrink: 0,
-                            fontFamily: 'var(--font-mono)',
-                            fontSize: '0.85rem'
-                          }}
-                          aria-label="Country Code"
-                        >
-                          {COUNTRY_CODES.map((item) => (
-                            <option key={item.code} value={item.code}>
-                              {item.label}
-                            </option>
-                          ))}
-                        </select>
-                        <div style={{ flex: 1 }}>
-                          <input
-                            type="tel"
-                            id="contact-phone"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            placeholder="93849 59626"
-                            className="dark-studio-input"
-                            aria-required="true"
-                            aria-invalid={!!errors.phone}
-                            autoComplete="tel-national"
-                          />
-                        </div>
-                      </div>
-                      {errors.phone && <span className="error-note" role="alert">{errors.phone}</span>}
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="contact-business" className="input-label">
-                        Business / Brand Name <span className="opt-tag">(Optional)</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="contact-business"
-                        name="businessName"
-                        value={formData.businessName}
-                        onChange={handleChange}
-                        placeholder="Company, Clinic, or Agency"
-                        className="dark-studio-input"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 3: Project Type & Budget */}
-                  <div className="form-fields-row">
-                    <div className="form-group">
-                      <label htmlFor="contact-project-type" className="input-label">
-                        Requirement Type
-                      </label>
-                      <select
-                        id="contact-project-type"
-                        name="projectType"
-                        value={formData.projectType}
-                        onChange={handleChange}
-                        className="dark-studio-select"
-                      >
-                        {projectEnquiryData.projectTypes.map((type) => (
-                          <option key={type.value} value={type.value}>
-                            {type.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="contact-budget" className="input-label">
-                        Estimated Budget
-                      </label>
-                      <select
-                        id="contact-budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleChange}
-                        className="dark-studio-select"
-                      >
-                        {projectEnquiryData.budgets.map((tier) => (
-                          <option key={tier.value} value={tier.value}>
-                            {tier.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Project Details Textarea */}
+                  {/* 1. Business Name — Required */}
                   <div className="form-group">
-                    <label htmlFor="contact-details" className="input-label">
-                      Project Details <span className="opt-tag">(Optional)</span>
+                    <label htmlFor="contact-business" className="input-label">
+                      Business Name <span className="req-star">*</span>
                     </label>
-                    <textarea
-                      id="contact-details"
-                      name="projectDetails"
-                      value={formData.projectDetails}
+                    <input
+                      type="text"
+                      id="contact-business"
+                      name="businessName"
+                      value={formData.businessName}
                       onChange={handleChange}
-                      placeholder="Briefly describe what you need (e.g., website redesign, landing page, custom features, timeline)."
-                      rows={4}
-                      className="dark-studio-textarea"
-                    ></textarea>
+                      placeholder="Company, Clinic, or Brand"
+                      className="dark-studio-input"
+                      aria-required="true"
+                      aria-invalid={!!errors.businessName}
+                      autoComplete="organization"
+                      disabled={isSubmitting}
+                    />
+                    {errors.businessName && <span className="error-note" role="alert">{errors.businessName}</span>}
+                  </div>
+
+                  {/* 2. Phone Number — Required */}
+                  <div className="form-group">
+                    <label htmlFor="contact-phone" className="input-label">
+                      Phone Number <span className="req-star">*</span>
+                    </label>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                      <select
+                        name="countryCode"
+                        value={formData.countryCode}
+                        onChange={handleChange}
+                        className="dark-studio-select"
+                        style={{
+                          width: 'auto',
+                          minWidth: '105px',
+                          flexShrink: 0,
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.85rem'
+                        }}
+                        aria-label="Country Code"
+                        disabled={isSubmitting}
+                      >
+                        {COUNTRY_CODES.map((item) => (
+                          <option key={item.code} value={item.code}>
+                            {item.label}
+                          </option>
+                        ))}
+                      </select>
+                      <div style={{ flex: 1 }}>
+                        <input
+                          type="tel"
+                          id="contact-phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          placeholder="93849 59626"
+                          className="dark-studio-input"
+                          aria-required="true"
+                          aria-invalid={!!errors.phone}
+                          autoComplete="tel-national"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+                    </div>
+                    {errors.phone && <span className="error-note" role="alert">{errors.phone}</span>}
+                  </div>
+
+                  {/* 3. Email Address — Optional */}
+                  <div className="form-group">
+                    <label htmlFor="contact-email" className="input-label">
+                      Email Address <span className="opt-tag">(Optional)</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="contact-email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="you@company.com"
+                      className="dark-studio-input"
+                      aria-required="false"
+                      aria-invalid={!!errors.email}
+                      autoComplete="email"
+                      disabled={isSubmitting}
+                    />
+                    {errors.email && <span className="error-note" role="alert">{errors.email}</span>}
                   </div>
 
                   {/* Submission Error Banner */}

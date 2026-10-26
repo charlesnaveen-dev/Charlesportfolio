@@ -3746,6 +3746,100 @@
   padding: clamp(1.5rem, 1.25rem + 2vw, 2.5rem) clamp(1.25rem, 1rem + 1.5vw, 2.25rem);
 }
 
+/* Premium Minimal Success Confirmation State */
+.enquiry-success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(3rem, 2.5rem + 3vw, 5rem) clamp(1.5rem, 1.25rem + 2vw, 3rem);
+  min-height: 280px;
+  animation: enquiryFadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes enquiryFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enquiry-success-state {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.enquiry-success-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin-bottom: 1.25rem;
+}
+
+/* Light Card Theme (StartProject.jsx) */
+.enquiry-form-card .enquiry-success-icon-wrap {
+  background-color: var(--accent-lime);
+  color: var(--text-near-black);
+  border: 2px solid var(--text-near-black);
+  box-shadow: 2px 2px 0px var(--text-near-black);
+}
+
+.enquiry-form-card .enquiry-success-title {
+  font-family: var(--font-monument);
+  font-size: clamp(1.4rem, 1.2rem + 1vw, 2rem);
+  font-weight: 800;
+  color: var(--text-near-black);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0 0 0.75rem 0;
+}
+
+.enquiry-form-card .enquiry-success-text {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+/* Dark Card Theme (Contact.jsx) */
+.contact-form-container .enquiry-success-icon-wrap {
+  background-color: rgba(216, 243, 58, 0.15);
+  color: var(--accent-lime);
+  border: 1px solid rgba(216, 243, 58, 0.3);
+}
+
+.contact-form-container .enquiry-success-title {
+  font-family: var(--font-monument);
+  font-size: clamp(1.3rem, 1.15rem + 1vw, 1.9rem);
+  font-weight: 800;
+  color: var(--bg-ivory);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0 0 0.75rem 0;
+}
+
+.contact-form-container .enquiry-success-text {
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+  color: var(--text-inverse-muted);
+  line-height: 1.6;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
 .enquiry-form-card .success-check-icon {
   color: var(--accent-lime);
   background-color: var(--text-near-black);

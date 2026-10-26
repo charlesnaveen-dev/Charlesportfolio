@@ -145,35 +145,36 @@ export function getSafeResendDiagnostics() {
 /**
  * Generates plain-text representation of the enquiry for email clients
  */
-function generateEmailText({ name, email, phone, businessName, projectType, budget, message, createdAt }) {
-  return [
+function generateEmailText({ businessName, phone, email, createdAt }) {
+  const lines = [
     `========================================`,
-    `NEW PROJECT ENQUIRY — CHARLES NAVEEN`,
+    `NEW BUSINESS ENQUIRY — CHARLES NAVEEN`,
     `========================================`,
     ``,
-    `Client Name:   ${name}`,
-    `Email:         ${email}`,
-    `Phone:         ${phone}`,
-    `Business:      ${businessName || 'Not specified'}`,
-    `Project Type:  ${projectType || 'General Enquiry'}`,
-    `Budget:        ${budget || 'Flexible / Discussion'}`,
-    `Submitted At:  ${createdAt || new Date().toISOString()}`,
-    ``,
-    `Project Brief / Message:`,
-    `----------------------------------------`,
-    message || 'No project description provided.',
-    ``,
-    `----------------------------------------`,
-    `Direct WhatsApp: https://wa.me/${phone.replace(/[^0-9]/g, '')}`,
-    `Direct Reply:    mailto:${email}`,
-    `========================================`
-  ].join('\n');
+    `Business Name: ${businessName}`,
+    `Phone Number:  ${phone}`
+  ];
+
+  if (email) {
+    lines.push(`Email Address: ${email}`);
+  }
+
+  lines.push(`Submitted At:  ${createdAt || new Date().toISOString()}`);
+  lines.push(``);
+  lines.push(`----------------------------------------`);
+  lines.push(`Direct WhatsApp: https://wa.me/${phone.replace(/[^0-9]/g, '')}`);
+  if (email) {
+    lines.push(`Direct Reply:    mailto:${email}`);
+  }
+  lines.push(`========================================`);
+
+  return lines.join('\n');
 }
 
 /**
  * Generates modern, high-contrast HTML email template matching the portfolio design language
  */
-function generateEmailHtml({ name, email, phone, businessName, projectType, budget, message, createdAt }) {
+function generateEmailHtml({ businessName, phone, email, createdAt }) {
   const cleanPhone = phone.replace(/[^0-9]/g, '');
   const formattedTime = new Date(createdAt || Date.now()).toLocaleString('en-US', {
     dateStyle: 'full',
@@ -187,7 +188,7 @@ function generateEmailHtml({ name, email, phone, businessName, projectType, budg
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Project Enquiry from ${escapeHtml(name)}</title>
+  <title>New Business Enquiry from ${escapeHtml(businessName)}</title>
   <style>
     body {
       margin: 0;
@@ -234,7 +235,7 @@ function generateEmailHtml({ name, email, phone, businessName, projectType, budg
       margin-bottom: 24px;
     }
     .field-grid td {
-      padding: 10px 0;
+      padding: 12px 0;
       border-bottom: 1px solid #252820;
       font-size: 14px;
       vertical-align: top;
@@ -256,31 +257,6 @@ function generateEmailHtml({ name, email, phone, businessName, projectType, budg
     .field-val a {
       color: #D8F33A;
       text-decoration: none;
-    }
-    .message-block {
-      background-color: #0E0F0D;
-      border: 1px solid #2B2F25;
-      border-left: 3px solid #D8F33A;
-      border-radius: 6px;
-      padding: 16px 20px;
-      margin: 20px 0 28px 0;
-    }
-    .message-heading {
-      font-family: 'SF Mono', Consolas, Monaco, monospace;
-      font-size: 11px;
-      font-weight: 700;
-      color: #8E9285;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
-    .message-text {
-      font-size: 14px;
-      line-height: 1.6;
-      color: #E2E1DA;
-      white-space: pre-wrap;
-      margin: 0;
     }
     .btn-row {
       margin-top: 24px;
@@ -323,37 +299,23 @@ function generateEmailHtml({ name, email, phone, businessName, projectType, budg
 <body>
   <div class="wrapper">
     <div class="header">
-      <div class="eyebrow">PORTFOLIO CLIENT ENQUIRY</div>
-      <h1 class="title">New Project Request from ${escapeHtml(name)}</h1>
+      <div class="eyebrow">PORTFOLIO BUSINESS ENQUIRY</div>
+      <h1 class="title">New Enquiry from ${escapeHtml(businessName)}</h1>
     </div>
     <div class="body-content">
       <table class="field-grid">
         <tr>
-          <td class="field-label">Name</td>
-          <td class="field-val"><strong>${escapeHtml(name)}</strong></td>
+          <td class="field-label">Business Name</td>
+          <td class="field-val"><strong>${escapeHtml(businessName)}</strong></td>
         </tr>
         <tr>
-          <td class="field-label">Email</td>
-          <td class="field-val"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td>
-        </tr>
-        <tr>
-          <td class="field-label">Mobile / WhatsApp</td>
+          <td class="field-label">Phone Number</td>
           <td class="field-val"><a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a></td>
         </tr>
-        ${businessName ? `
+        ${email ? `
         <tr>
-          <td class="field-label">Business / Brand</td>
-          <td class="field-val">${escapeHtml(businessName)}</td>
-        </tr>` : ''}
-        ${projectType ? `
-        <tr>
-          <td class="field-label">Project Type</td>
-          <td class="field-val"><span style="color:#D8F33A;">●</span> ${escapeHtml(projectType)}</td>
-        </tr>` : ''}
-        ${budget ? `
-        <tr>
-          <td class="field-label">Estimated Budget</td>
-          <td class="field-val">${escapeHtml(budget)}</td>
+          <td class="field-label">Email Address</td>
+          <td class="field-val"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td>
         </tr>` : ''}
         <tr>
           <td class="field-label">Submission Date</td>
@@ -361,18 +323,14 @@ function generateEmailHtml({ name, email, phone, businessName, projectType, budg
         </tr>
       </table>
 
-      <div class="message-block">
-        <div class="message-heading">Project Scope / Requirements</div>
-        <p class="message-text">${escapeHtml(message || 'No additional details provided.')}</p>
-      </div>
-
       <div class="btn-row">
-        <a href="mailto:${escapeHtml(email)}?subject=${encodeURIComponent('Regarding your project enquiry — Charles Naveen')}" class="btn-primary">
-          Reply via Email →
-        </a>
         ${cleanPhone ? `
-        <a href="https://wa.me/${cleanPhone}" target="_blank" class="btn-secondary">
+        <a href="https://wa.me/${cleanPhone}" target="_blank" class="btn-primary">
           Message on WhatsApp ↗
+        </a>` : ''}
+        ${email ? `
+        <a href="mailto:${escapeHtml(email)}?subject=${encodeURIComponent('Regarding your business enquiry — Charles Naveen')}" class="btn-secondary">
+          Reply via Email →
         </a>` : ''}
       </div>
     </div>
@@ -436,36 +394,47 @@ export default async function handler(req, res) {
     }
 
     // 2. Sanitize & Validate Inputs
-    const name = typeof payload.name === 'string' ? payload.name.trim() : '';
+    // Form now uses Business Name (Required), Phone Number (Required), and Email (Optional)
+    const businessName = (
+      typeof payload.businessName === 'string' ? payload.businessName.trim() :
+      typeof payload.business_name === 'string' ? payload.business_name.trim() :
+      typeof payload.name === 'string' ? payload.name.trim() : ''
+    );
+
+    // Compatibility: populate name column with businessName if name is not explicitly passed
+    const name = (typeof payload.name === 'string' && payload.name.trim().length > 0)
+      ? payload.name.trim()
+      : businessName;
+
     const email = typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : '';
     const phone = typeof payload.phone === 'string' ? payload.phone.trim() : '';
-    const businessName = typeof payload.businessName === 'string' ? payload.businessName.trim() : '';
-    const projectType = typeof payload.projectType === 'string' ? payload.projectType.trim() : '';
-    const budget = typeof payload.budget === 'string' ? payload.budget.trim() : '';
-    const message = typeof payload.message === 'string' ? payload.message.trim() : '';
-    const source = typeof payload.source === 'string' ? payload.source.trim() : 'portfolio-form';
+    const source = typeof payload.source === 'string' && payload.source.trim().length > 0
+      ? payload.source.trim()
+      : 'portfolio-form';
 
-    // Field Length & Validation Rules
-    if (!name || name.length < 2) {
+    // 1. Business Name — Required
+    if (!businessName || businessName.length < 2) {
       return res.status(400).json({
         success: false,
-        error: 'Please provide a valid name (at least 2 characters).'
+        error: 'Please provide a valid business name (at least 2 characters).'
       });
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Please provide a valid email address.'
-      });
-    }
-
+    // 2. Phone Number — Required
     const cleanPhone = phone.replace(/[\s\-()]/g, '');
     if (!cleanPhone || !/^\+?[0-9]{7,18}$/.test(cleanPhone)) {
       return res.status(400).json({
         success: false,
         error: 'Please provide a valid mobile or WhatsApp number (7–18 digits).'
+      });
+    }
+
+    // 3. Email Address — Optional (validate format ONLY when supplied)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide a valid email address.'
       });
     }
 
@@ -489,12 +458,12 @@ export default async function handler(req, res) {
 
     const enquiryRecord = {
       name,
-      email,
+      email: email || null,
       phone,
-      business_name: businessName || null,
-      project_type: projectType || null,
-      budget: budget || null,
-      message: message || null,
+      business_name: businessName,
+      project_type: typeof payload.projectType === 'string' ? payload.projectType.trim() || null : null,
+      budget: typeof payload.budget === 'string' ? payload.budget.trim() || null : null,
+      message: typeof payload.message === 'string' ? payload.message.trim() || null : null,
       source,
       status: 'new'
     };
@@ -533,32 +502,29 @@ export default async function handler(req, res) {
 
         console.log(`[EMAIL_DISPATCH] Attempting email notification to: ${toEmail} from: ${fromEmail}`);
 
-        const emailResult = await resend.emails.send({
+        const emailPayload = {
           from: fromEmail,
           to: toEmail,
-          replyTo: email,
-          subject: `New Project Enquiry: ${name}${businessName ? ` (${businessName})` : ''}`,
+          subject: `New Business Enquiry: ${businessName}`,
           html: generateEmailHtml({
-            name,
-            email,
-            phone,
             businessName,
-            projectType,
-            budget,
-            message,
+            phone,
+            email: email || null,
             createdAt
           }),
           text: generateEmailText({
-            name,
-            email,
-            phone,
             businessName,
-            projectType,
-            budget,
-            message,
+            phone,
+            email: email || null,
             createdAt
           })
-        });
+        };
+
+        if (email) {
+          emailPayload.replyTo = email;
+        }
+
+        const emailResult = await resend.emails.send(emailPayload);
 
         if (emailResult?.error) {
           console.error('[RESEND_ERROR] Resend returned an error:', emailResult.error);

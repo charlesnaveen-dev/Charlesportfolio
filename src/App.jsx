@@ -46,8 +46,8 @@ function getInitialRoute() {
   return '/';
 }
 
-export default function App() {
-  const [currentRoute, setCurrentRoute] = useState(getInitialRoute);
+export default function App({ initialRoute = null }) {
+  const [currentRoute, setCurrentRoute] = useState(() => initialRoute || getInitialRoute());
   const [activeModalProject, setActiveModalProject] = useState(null);
   const [contactIntent, setContactIntent] = useState('direct');
   const [selectedProjectType, setSelectedProjectType] = useState(null);
