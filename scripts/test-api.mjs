@@ -209,55 +209,216 @@ async function runTests() {
     console.log('✓ Missing Key State: Diagnostics accurately identify missing key without throwing\n');
   }
 
-  // --- UNIT 8: Payload Verification for Simplified Form ---
+  // --- UNIT 8: Payload Verification for Simplified Form (Scenarios 1–7) ---
   {
-    console.log('[TEST GROUP 8] Submission Payload Scenarios Verification');
+    console.log('[TEST GROUP 8] End-to-End Scenarios 1–7 Simulation & Verification');
 
-    // Scenario 1: Business name and phone number only
-    const { req: p1Req, res: p1Res } = createMockReqRes({
-      method: 'POST',
-      body: { businessName: 'Apex Solutions', phone: '+91 93849 59626' }
-    });
-    // Triggers missing db key 503, which proves it passed all input validations!
-    await enquiryHandler(p1Req, p1Res);
-    console.assert(p1Res.statusCode === 503, 'Valid submission with business name & phone only must pass validation');
-    console.log('✓ Scenario 1: Valid submission with business name and phone only accepted');
+    // Helper to create mock Supabase client
+    function createMockSupabase({ shouldFail = false, insertedRecord = null } = {}) {
+      let insertCalls = [];
+      return {
+        getInsertCalls: () => insertCalls,
+        from(tableName) {
+          return {
+            insert(records) {
+              insertCalls.push({ table: tableName, records });
+              return {
+                select() {
+                  return {
+                    single: async () => {
+                      if (shouldFail) {
+                        return { data: null, error: { message: 'Supabase simulated insertion error' } };
+                      }
+                      return {
+                        data: insertedRecord || {
+                          id: 'mock-uuid-' + Math.random().toString(36).substring(2, 9),
+                          created_at: new Date().toISOString(),
+                          name: records[0].name,
+                          email: records[0].email
+                        },
+                        error: null
+                      };
+                    }
+                  };
+                }
+              };
+            }
+          };
+        }
+      };
+    }
 
-    // Scenario 2: Business name, phone, and valid email
-    const { req: p2Req, res: p2Res } = createMockReqRes({
-      method: 'POST',
-      body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'contact@apex.com' }
-    });
-    await enquiryHandler(p2Req, p2Res);
-    console.assert(p2Res.statusCode === 503, 'Valid submission with email must pass validation');
-    console.log('✓ Scenario 2: Valid submission with business name, phone, and optional email accepted');
+    // Helper to create mock Resend client
+    function createMockResend({ shouldFail = false } = {}) {
+      let sendCalls = [];
+      return {
+        getSendCalls: () => sendCalls,
+        emails: {
+          send: async (payload) => {
+            sendCalls.push(payload);
+            if (shouldFail) {
+              return { data: null, error: { message: 'Resend API rate limit or delivery error' } };
+            }
+            return { data: { id: 'email-' + Math.random().toString(36).substring(2, 9) }, error: null };
+          }
+        }
+      };
+    }
 
-    // Scenario 3: Missing business name rejected
-    const { req: p3Req, res: p3Res } = createMockReqRes({
-      method: 'POST',
-      body: { businessName: '', phone: '+91 93849 59626' }
-    });
-    await enquiryHandler(p3Req, p3Res);
-    console.assert(p3Res.statusCode === 400, 'Missing business name rejected');
-    console.log('✓ Scenario 3: Missing business name rejected with 400');
+    // SCENARIO 1: Submit with business name and phone number only (Optional email omitted)
+    {
+      const mockDb = createMockSupabase();
+      const mockResend = createMockResend();
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: 'Apex Solutions', phone: '+91 93849 59626' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
 
-    // Scenario 4: Missing phone number rejected
-    const { req: p4Req, res: p4Res } = createMockReqRes({
-      method: 'POST',
-      body: { businessName: 'Apex Solutions', phone: '' }
-    });
-    await enquiryHandler(p4Req, p4Res);
-    console.assert(p4Res.statusCode === 400, 'Missing phone number rejected');
-    console.log('✓ Scenario 4: Missing phone number rejected with 400');
+      await enquiryHandler(req, res);
 
-    // Scenario 5: Invalid email format rejected
-    const { req: p5Req, res: p5Res } = createMockReqRes({
-      method: 'POST',
-      body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'invalid-email' }
-    });
-    await enquiryHandler(p5Req, p5Res);
-    console.assert(p5Res.statusCode === 400, 'Invalid email rejected');
-    console.log('✓ Scenario 5: Invalid email format rejected with 400\n');
+      console.assert(res.statusCode === 200, 'Scenario 1 should return 200');
+      console.assert(res.data.success === true, 'Scenario 1 success should be true');
+      console.assert(Boolean(res.data.enquiryId), 'Scenario 1 should return enquiryId');
+
+      const dbCalls = mockDb.getInsertCalls();
+      console.assert(dbCalls.length === 1, 'Supabase insert must be called exactly once');
+      const savedRecord = dbCalls[0].records[0];
+      console.assert(savedRecord.name === 'Apex Solutions', 'Required name column populated with businessName');
+      console.assert(savedRecord.business_name === 'Apex Solutions', 'business_name populated');
+      console.assert(savedRecord.email === null, 'Missing optional email must be stored as SQL null');
+      console.assert(savedRecord.status === 'new', 'Status must default to new');
+      console.assert(savedRecord.source === 'portfolio-form', 'Default source preserved');
+
+      const resendCalls = mockResend.getSendCalls();
+      console.assert(resendCalls.length === 1, 'Resend send must be called once');
+      console.assert(resendCalls[0].replyTo === undefined, 'No replyTo when email omitted');
+      console.assert(!resendCalls[0].text.includes('Email Address:'), 'Email row excluded from text template');
+      console.log('✓ Scenario 1: Submit with business name & phone only -> SQL null email, Resend sent, saved exactly once');
+    }
+
+    // SCENARIO 2: Submit with business name, phone number, and optional email
+    {
+      const mockDb = createMockSupabase();
+      const mockResend = createMockResend();
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'contact@apexsolutions.com' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
+
+      await enquiryHandler(req, res);
+
+      console.assert(res.statusCode === 200, 'Scenario 2 should return 200');
+      console.assert(res.data.success === true, 'Scenario 2 success should be true');
+      const savedRecord = mockDb.getInsertCalls()[0].records[0];
+      console.assert(savedRecord.email === 'contact@apexsolutions.com', 'Email correctly saved');
+      const emailPayload = mockResend.getSendCalls()[0];
+      console.assert(emailPayload.replyTo === 'contact@apexsolutions.com', 'ReplyTo populated when email supplied');
+      console.assert(emailPayload.text.includes('Email Address: contact@apexsolutions.com'), 'Email row included in template');
+      console.log('✓ Scenario 2: Submit with business name, phone & valid email -> email persisted, replyTo set, saved once');
+    }
+
+    // SCENARIO 3: Submit with missing business name
+    {
+      const mockDb = createMockSupabase();
+      const mockResend = createMockResend();
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: '   ', phone: '+91 93849 59626' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
+
+      await enquiryHandler(req, res);
+
+      console.assert(res.statusCode === 400, 'Scenario 3 should return 400');
+      console.assert(res.data.success === false, 'Scenario 3 success should be false');
+      console.assert(mockDb.getInsertCalls().length === 0, 'No DB insert on validation failure');
+      console.assert(mockResend.getSendCalls().length === 0, 'No Resend call on validation failure');
+      console.log('✓ Scenario 3: Missing business name rejected with 400; zero DB/Resend calls');
+    }
+
+    // SCENARIO 4: Submit with missing phone number
+    {
+      const mockDb = createMockSupabase();
+      const mockResend = createMockResend();
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: 'Apex Solutions', phone: '   ' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
+
+      await enquiryHandler(req, res);
+
+      console.assert(res.statusCode === 400, 'Scenario 4 should return 400');
+      console.assert(res.data.success === false, 'Scenario 4 success should be false');
+      console.assert(mockDb.getInsertCalls().length === 0, 'No DB insert on validation failure');
+      console.assert(mockResend.getSendCalls().length === 0, 'No Resend call on validation failure');
+      console.log('✓ Scenario 4: Missing phone number rejected with 400; zero DB/Resend calls');
+    }
+
+    // SCENARIO 5: Submit with invalid email format
+    {
+      const mockDb = createMockSupabase();
+      const mockResend = createMockResend();
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'invalid-email-no-at-domain' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
+
+      await enquiryHandler(req, res);
+
+      console.assert(res.statusCode === 400, 'Scenario 5 should return 400');
+      console.assert(res.data.success === false, 'Scenario 5 success should be false');
+      console.assert(mockDb.getInsertCalls().length === 0, 'No DB insert on invalid email');
+      console.assert(mockResend.getSendCalls().length === 0, 'No Resend call on invalid email');
+      console.log('✓ Scenario 5: Invalid email format rejected with 400; zero DB/Resend calls');
+    }
+
+    // SCENARIO 6: Simulate Supabase insertion failure
+    {
+      const mockDb = createMockSupabase({ shouldFail: true });
+      const mockResend = createMockResend();
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: 'Apex Solutions', phone: '+91 93849 59626' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
+
+      await enquiryHandler(req, res);
+
+      console.assert(res.statusCode === 500, 'Scenario 6 should return 500 on DB failure');
+      console.assert(res.data.success === false, 'Scenario 6 success should be false');
+      console.assert(mockResend.getSendCalls().length === 0, 'Resend MUST NOT be called if DB insertion fails');
+      console.log('✓ Scenario 6: Supabase insertion failure returns 500, no email dispatched, no duplicate enquiry');
+    }
+
+    // SCENARIO 7: Simulate Resend notification failure
+    {
+      const mockDb = createMockSupabase();
+      const mockResend = createMockResend({ shouldFail: true });
+      const { req, res } = createMockReqRes({
+        method: 'POST',
+        body: { businessName: 'Apex Solutions', phone: '+91 93849 59626', email: 'valid@apex.com' }
+      });
+      req._supabaseClient = mockDb;
+      req._resendClient = mockResend;
+
+      await enquiryHandler(req, res);
+
+      console.assert(res.statusCode === 200, 'Scenario 7 should return 200 since enquiry is safely recorded');
+      console.assert(res.data.success === true, 'Scenario 7 success should be true');
+      console.assert(res.data.emailSent === false, 'emailSent should be false');
+      console.assert(mockDb.getInsertCalls().length === 1, 'Enquiry was saved exactly once in database');
+      console.log('✓ Scenario 7: Resend notification failure handled gracefully without duplicate enquiry\n');
+    }
   }
 
   console.log('====================================================');

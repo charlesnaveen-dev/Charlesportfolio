@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { developerBio } from '../data/projects';
-import { Award, GraduationCap, MapPin, Compass, Download } from 'lucide-react';
+import { GraduationCap, MapPin, Compass } from 'lucide-react';
 import { gsap, prefersReducedMotion } from '../utils/motion';
 
 export default function About() {
@@ -99,20 +99,6 @@ export default function About() {
                 <Compass size={16} className="cred-icon" aria-hidden="true" />
                 <span>Custom React &amp; Modern CSS</span>
               </div>
-            </div>
-
-            {/* Download Portfolio PDF Banner */}
-            <div style={{ marginTop: '1.75rem' }}>
-              <a
-                href="/charles-naveen-portfolio.pdf"
-                download="Charles-Naveen-Portfolio.pdf"
-                className="btn-hero-secondary"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}
-                title="Download 3-page compact portfolio PDF"
-              >
-                <Download size={15} aria-hidden="true" />
-                <span>DOWNLOAD PORTFOLIO PDF (AGENCY SPEC)</span>
-              </a>
             </div>
           </div>
 

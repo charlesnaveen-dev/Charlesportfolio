@@ -261,38 +261,6 @@ export default function Contact() {
           {/* Right Column: Secure Enquiry Form */}
           <div className="contact-form-col">
             <div className="contact-form-container">
-              <div style={{ marginBottom: '1.25rem' }}>
-                <span style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  color: 'var(--accent-lime)',
-                  textTransform: 'uppercase',
-                  display: 'block',
-                  marginBottom: '0.25rem'
-                }}>
-                  FAST INQUIRY
-                </span>
-                <h3 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'var(--text-xl)',
-                  fontWeight: 800,
-                  color: 'var(--bg-ivory)',
-                  margin: 0
-                }}>
-                  LET'S TALK ABOUT YOUR PROJECT
-                </h3>
-                <p style={{
-                  fontSize: 'var(--text-xs)',
-                  color: 'var(--text-inverse-muted)',
-                  marginTop: '0.35rem',
-                  marginBottom: 0
-                }}>
-                  Share your details and I'll get back to you promptly.
-                </p>
-              </div>
-
               {isSubmitted ? (
                 <div className="enquiry-success-state" role="status" aria-live="polite">
                   <div className="enquiry-success-icon-wrap">
@@ -304,7 +272,40 @@ export default function Contact() {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate className="contact-form-element">
+                <>
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <span style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      letterSpacing: '0.08em',
+                      color: 'var(--accent-lime)',
+                      textTransform: 'uppercase',
+                      display: 'block',
+                      marginBottom: '0.25rem'
+                    }}>
+                      FAST INQUIRY
+                    </span>
+                    <h3 style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: 'var(--text-xl)',
+                      fontWeight: 800,
+                      color: 'var(--bg-ivory)',
+                      margin: 0
+                    }}>
+                      LET'S TALK ABOUT YOUR PROJECT
+                    </h3>
+                    <p style={{
+                      fontSize: 'var(--text-xs)',
+                      color: 'var(--text-inverse-muted)',
+                      marginTop: '0.35rem',
+                      marginBottom: 0
+                    }}>
+                      Share your details and I'll get back to you promptly.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleSubmit} noValidate className="contact-form-element">
                   {/* Honeypot Field for Spam Protection */}
                   <input
                     type="text"
@@ -448,7 +449,8 @@ export default function Contact() {
                     )}
                   </button>
                 </form>
-              )}
+              </>
+            )}
             </div>
           </div>
         </div>

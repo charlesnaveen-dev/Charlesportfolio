@@ -240,19 +240,6 @@ export default function StartProject() {
 
         {/* Simplified, Clean & Focused Project Enquiry Form Container */}
         <div className="enquiry-form-card" style={{ maxWidth: '680px', margin: '0 auto' }}>
-          <div className="enquiry-card-header">
-            <div>
-              <span className="enquiry-card-eyebrow">DIRECT INQUIRY</span>
-              <h3 className="enquiry-card-title">LET'S TALK ABOUT YOUR PROJECT</h3>
-              <p className="enquiry-card-subtitle">
-                Share your details and I'll get back to you promptly.
-              </p>
-            </div>
-            <span className="enquiry-response-tag">
-              ● Direct response within 24h
-            </span>
-          </div>
-
           {isSubmitted ? (
             <div className="enquiry-success-state" role="status" aria-live="polite">
               <div className="enquiry-success-icon-wrap">
@@ -264,7 +251,21 @@ export default function StartProject() {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} noValidate className="enquiry-form-body">
+            <>
+              <div className="enquiry-card-header">
+                <div>
+                  <span className="enquiry-card-eyebrow">DIRECT INQUIRY</span>
+                  <h3 className="enquiry-card-title">LET'S TALK ABOUT YOUR PROJECT</h3>
+                  <p className="enquiry-card-subtitle">
+                    Share your details and I'll get back to you promptly.
+                  </p>
+                </div>
+                <span className="enquiry-response-tag">
+                  ● Direct response within 24h
+                </span>
+              </div>
+
+              <form onSubmit={handleSubmit} noValidate className="enquiry-form-body">
               {/* Honeypot Field for Spam Protection */}
               <input
                 type="text"
@@ -415,7 +416,8 @@ export default function StartProject() {
                 </button>
               </div>
             </form>
-          )}
+          </>
+        )}
         </div>
       </div>
     </section>

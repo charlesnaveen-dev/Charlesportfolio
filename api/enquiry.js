@@ -441,7 +441,7 @@ export default async function handler(req, res) {
     // 3. Supabase Integration
     const { url: supabaseUrl, key: supabaseKey } = getSupabaseCredentials();
 
-    if (!supabaseKey) {
+    if (!supabaseKey && !req._supabaseClient) {
       console.error('[CONFIG_ERROR] SUPABASE_SERVICE_ROLE_KEY environment variable is missing.');
       return res.status(503).json({
         success: false,
@@ -449,7 +449,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
+    const supabase = req._supabaseClient || createClient(supabaseUrl, supabaseKey, {
       auth: {
         persistSession: false,
         autoRefreshToken: false
@@ -478,7 +478,7 @@ export default async function handler(req, res) {
       console.error('[DATABASE_ERROR] Failed to insert enquiry into Supabase:', dbError);
       return res.status(500).json({
         success: false,
-        error: `Database insertion error: ${dbError.message || 'Check database permissions or schema.'}`
+        error: 'Unable to save enquiry right now. Please try again or reach out directly.'
       });
     }
 
@@ -494,9 +494,9 @@ export default async function handler(req, res) {
     // Safe Diagnostic Log (Never logs key values)
     console.log('[CONFIG_DIAGNOSTIC] Resend configuration check:', JSON.stringify(resendDiagnostics));
 
-    if (resendApiKey) {
+    if (resendApiKey || req._resendClient) {
       try {
-        const resend = new Resend(resendApiKey);
+        const resend = req._resendClient || new Resend(resendApiKey);
         const toEmail = getNotificationToEmail();
         const fromEmail = getNotificationFromEmail();
 
@@ -546,9 +546,7 @@ export default async function handler(req, res) {
       success: true,
       message: 'Enquiry successfully submitted and recorded.',
       enquiryId,
-      emailSent,
-      emailNotice: !resendApiKey ? 'RESEND_API_KEY not set yet' : emailError ? emailError : undefined,
-      diagnostics: !resendApiKey ? resendDiagnostics : undefined
+      emailSent
     });
   } catch (err) {
     console.error('[SERVER_ERROR] Unexpected error in enquiry handler:', err);

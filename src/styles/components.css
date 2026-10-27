@@ -3808,7 +3808,7 @@
 .enquiry-form-card .enquiry-success-text {
   font-family: var(--font-sans);
   font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
-  color: var(--text-secondary);
+  color: var(--text-secondary-ivory);
   line-height: 1.6;
   max-width: 460px;
   margin: 0 auto;

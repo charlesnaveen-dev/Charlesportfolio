@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUp, Download } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import { contactConfig } from '../data/contactConfig';
 
 export default function Footer({ onNavigate }) {
@@ -60,16 +60,6 @@ export default function Footer({ onNavigate }) {
                   </a>
                 </li>
               ))}
-              <li>
-                <a
-                  href="/charles-naveen-portfolio.pdf"
-                  download="Charles-Naveen-Portfolio.pdf"
-                  className="footer-nav-anchor"
-                  style={{ color: 'var(--accent-lime)', fontWeight: 600 }}
-                >
-                  Portfolio PDF ↓
-                </a>
-              </li>
             </ul>
           </nav>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowUpRight, Menu, X, ArrowRight, Download } from 'lucide-react';
+import { ArrowUpRight, Menu, X, ArrowRight } from 'lucide-react';
 import { useMagnetic } from '../hooks/useMagnetic';
 import { contactConfig } from '../data/contactConfig';
 
@@ -183,17 +183,6 @@ export default function Navbar({ currentRoute = '/', onNavigate, onOpenContact }
             </nav>
 
             <div className="overlay-meta-column">
-              <div className="overlay-meta-group">
-                <span className="overlay-meta-title">PORTFOLIO DOCUMENT</span>
-                <a
-                  href="/charles-naveen-portfolio.pdf"
-                  download="Charles-Naveen-Portfolio.pdf"
-                  className="overlay-meta-link highlight-lime"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Download Portfolio PDF ↓
-                </a>
-              </div>
               <div className="overlay-meta-group">
                 <span className="overlay-meta-title">DIRECT INQUIRIES</span>
                 <a href={`mailto:${contactConfig.emailPlaceholder}`} className="overlay-meta-link">
